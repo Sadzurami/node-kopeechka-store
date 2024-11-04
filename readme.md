@@ -39,7 +39,7 @@ Returns a new instance of `Kopeechka`.
 - `options.timeout` (number, optional): Api requests timeout in milliseconds.
 - `options.httpsAgent`(https.Agent, optional): Https agent to use for requests.
 
-### nstance
+### instance
 
 #### `.orderEmail(website: string, options: OrderEmailOptions): Promise<string>`
 
