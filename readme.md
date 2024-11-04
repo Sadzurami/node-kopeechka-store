@@ -1,6 +1,6 @@
 # kopeechka-store
 
-> Simple wrapper around [kopeechka.store](https://faq.kopeechka.store/) api
+> Simple wrapper around [kopeechka.store](https://kopeechka.store/) api
 
 ## Install
 
@@ -76,10 +76,11 @@ Retrieves the ID associated with the email address.
 
 - `email` (string): The email address to retrieve the ID for.
 
-#### `.refreshEmailId(email: string): Promise<void>`
+#### `.refreshEmailId(website: string, email: string): Promise<void>`
 
 Refreshes the ID associated with the email address.
 
+- `website` (string): The website to refresh email address for.
 - `email` (string): The email address to refresh the ID for.
 
 #### `.getEmailPassword(email: string): string`
