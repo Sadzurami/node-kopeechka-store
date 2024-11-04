@@ -72,16 +72,16 @@ Cancels or releases the specified email address.
 
 #### `.getEmailId(email: string): string`
 
-Retrieves the ID associated with the email address.
+Retrieves the id associated with the email address.
 
-- `email` (string): The email address to retrieve the ID for.
+- `email` (string): The email address to retrieve the id for.
 
 #### `.refreshEmailId(website: string, email: string): Promise<void>`
 
-Refreshes the ID associated with the email address.
+Refreshes the id associated with the email address.
 
 - `website` (string): The website to refresh email address for.
-- `email` (string): The email address to refresh the ID for.
+- `email` (string): The email address to refresh the id for.
 
 #### `.getEmailPassword(email: string): string`
 

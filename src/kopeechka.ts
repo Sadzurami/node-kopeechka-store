@@ -170,12 +170,12 @@ export class Kopeechka {
   }
 
   /**
-   * Retrieves the ID associated with the email address.
+   * Retrieves the id associated with the email address.
    *
-   * @param email - The email address to retrieve the ID for.
-   * @returns The ID of the specified email address.
+   * @param email - The email address to retrieve the id for.
+   * @returns The id of the specified email address.
    *
-   * @throws Will throw an error if the email ID is not found.
+   * @throws Will throw an error if the email id is not found.
    *
    * @example
    * ```
@@ -330,10 +330,10 @@ export class Kopeechka {
   }
 
   /**
-   * Refreshes the ID associated with the specified email address.
+   * Refreshes the id associated with the specified email address.
    *
-   * @param website - The website to refresh the email ID for.
-   * @param email - The email address to refresh the ID for.
+   * @param website - The website to refresh the email id for.
+   * @param email - The email address to refresh the id for.
    *
    * @throws Will throw an error due to network problems, server errors, etc.
    *
