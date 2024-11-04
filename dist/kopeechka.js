@@ -1,237 +1,192 @@
-'use strict';
-
-var fetch = require('node-fetch');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fetch__default = /*#__PURE__*/_interopDefaultLegacy(fetch);
-
-var StatusCodes;
-(function (StatusCodes) {
-    StatusCodes["ok"] = "OK";
-    StatusCodes["error"] = "ERROR";
-})(StatusCodes || (StatusCodes = {}));
-var ErrorCodes;
-(function (ErrorCodes) {
-    ErrorCodes["BAD_TOKEN"] = "The client key is not valid.";
-    ErrorCodes["BAD_SITE"] = "The \"website\" argument is not correct.";
-    ErrorCodes["BAD_DOMAIN"] = "The \"domains\" argument is not correct.";
-    ErrorCodes["BAD_BALANCE"] = "There are not enough funds to perform the operation.";
-    ErrorCodes["OUT_OF_STOCK"] = "The requested domain is out of stock.";
-    ErrorCodes["SYSTEM_ERROR"] = "Unknown, server error. Contact support.";
-    ErrorCodes["TIME_LIMIT_EXCEED"] = "Address ordering limit per second has been reached.";
-    ErrorCodes["NO_ACTIVATION"] = "The server could not find the task.";
-    ErrorCodes["ACTIVATION_CANCELED"] = "The task was canceled.";
-    ErrorCodes["WAIT_LINK"] = "Message not received.";
-    ErrorCodes["bad request"] = "An incorrect request was sent.";
-})(ErrorCodes || (ErrorCodes = {}));
-
-class KopeechkaError extends Error {
-    constructor(code) {
-        var _a;
-        // @ts-expect-error
-        super((_a = ErrorCodes[code]) !== null && _a !== void 0 ? _a : code);
-        this.code = code;
-    }
-}
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const got_1 = __importDefault(require("got"));
+const https_1 = require("https");
+const p_queue_1 = __importDefault(require("p-queue"));
+const ttlcache_1 = __importDefault(require("@isaacs/ttlcache"));
+const kopeechka_error_code_enum_1 = require("./enums/kopeechka.error.code.enum");
+const requestsQueue = new p_queue_1.default({ interval: 100, intervalCap: 1 });
 class Kopeechka {
-    constructor(clientKey) {
-        this.baseUrl = 'https://api.kopeechka.store';
-        this.token = clientKey;
-        this.id = '';
-        this.address = '';
+    baseApiUrl = 'https://api.kopeechka.store';
+    clientToken;
+    clientPartnerId = '7';
+    cache = new ttlcache_1.default({ ttl: 15 * 60 * 1000 });
+    httpAgent;
+    httpClient;
+    constructor(options) {
+        this.baseApiUrl = options.baseUrl || this.baseApiUrl;
+        this.clientToken = options.key;
+        this.clientPartnerId = options.partner || this.clientPartnerId;
+        this.httpAgent = options.httpsAgent || this.createHttpAgent();
+        this.httpClient = this.createHttpClient();
     }
-    // Account
-    /** Returns the account balance. */
+    async orderEmail(website, options = {}) {
+        try {
+            const domains = Array.isArray(options.domains) ? options.domains.join(',') : options.domains;
+            const { status, value, id, mail, password } = await this.httpClient
+                .get('mailbox-get-email', {
+                searchParams: {
+                    site: website,
+                    regex: options.regexp,
+                    sender: options.sender,
+                    subject: options.subject,
+                    password: options.password ? 1 : undefined,
+                    invenstor: options.invenstor ? 1 : undefined,
+                    mail_type: domains,
+                    soft: this.clientPartnerId,
+                },
+            })
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            this.cache.set(mail, id);
+            if (password)
+                this.cache.set(`${mail}:password`, password);
+            return mail;
+        }
+        catch (error) {
+            throw new Error('Failed to order email address', { cause: error });
+        }
+    }
+    async reorderEmail(website, email, options = {}) {
+        try {
+            const { status, value, id, mail, password } = await this.httpClient
+                .get('mailbox-reorder', {
+                searchParams: {
+                    site: website,
+                    email: email,
+                    regex: options.regexp,
+                    subject: options.subject,
+                    password: options.password ? 1 : undefined,
+                },
+            })
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            this.cache.set(mail, id);
+            if (password)
+                this.cache.set(`${mail}:password`, password);
+        }
+        catch (error) {
+            throw new Error('Failed to reorder email address', { cause: error });
+        }
+    }
+    async cancelEmail(email) {
+        try {
+            const id = this.getEmailId(email);
+            const { status, value } = await this.httpClient
+                .get('mailbox-cancel', { searchParams: { id } })
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            this.cache.delete(id);
+            this.cache.delete(`${email}:password`);
+        }
+        catch (error) {
+            throw new Error('Failed to cancel email address', { cause: error });
+        }
+    }
+    getEmailId(email) {
+        if (!this.cache.has(email))
+            throw new Error('Email id not found');
+        return this.cache.get(email);
+    }
+    getEmailPassword(email) {
+        if (!this.cache.has(`${email}:password`))
+            throw new Error('Email password not found');
+        return this.cache.get(`${email}:password`);
+    }
     async getBalance() {
-        const res = await this.send('/user-balance');
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return res.data.balance;
-    }
-    // Address
-    /** Gets email address (creates a new task). */
-    async getAddress(options) {
-        var _a, _b;
-        const params = this.cleanParams({
-            site: options.website,
-            mail_type: options.domains,
-            sender: (_a = options.filter) === null || _a === void 0 ? void 0 : _a.sender,
-            subject: (_b = options.filter) === null || _b === void 0 ? void 0 : _b.subject,
-            soft: 7
-        });
-        const res = await this.send('/mailbox-get-email', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        this.id = res.data.id;
-        this.address = res.data.mail;
-        return this.address;
-    }
-    /** Re-uses an email address (creates new task). */
-    async reuseAddress(options) {
-        var _a;
-        const params = this.cleanParams({
-            site: options.website,
-            email: (_a = options.address) !== null && _a !== void 0 ? _a : this.address
-        });
-        const res = await this.send('/mailbox-reorder', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        this.id = res.data.id;
-        this.address = res.data.mail;
-        return true;
-    }
-    /** Releases the email address (cancels task). */
-    async releaseAddress(id) {
-        const params = this.cleanParams({ id: id !== null && id !== void 0 ? id : this.id });
-        const res = await this.send('/mailbox-cancel', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        this.id = '';
-        this.address = '';
-        return true;
-    }
-    // Message
-    /** Retrieves the message resource. */
-    async getMessage(options = {}) {
-        var _a, _b;
-        const { timeout = 120000, delay = 10000 } = options;
-        const params = {
-            id: (_a = options.id) !== null && _a !== void 0 ? _a : this.id,
-            full: options.full === false ? 0 : 1
-        };
-        const timings = { timeout, delay };
-        const res = await this.waitMessage(params, timings);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return options.full === false && ((_b = res.data.value) === null || _b === void 0 ? void 0 : _b.length) > 0
-            ? res.data.value
-            : res.data.fullmessage;
-    }
-    async waitMessage(params, timings) {
-        let { start = 0, end = 0, delay, timeout } = timings;
-        start !== null && start !== void 0 ? start : (start = Date.now());
-        end !== null && end !== void 0 ? end : (end = start + timeout);
-        const res = await this.send('/mailbox-get-message', params);
-        if (res.message === 'WAIT_LINK' && end > Date.now() + delay) {
-            await this.wait(delay);
-            return await this.waitMessage(params, timings);
+        try {
+            const { status, value, balance } = await this.httpClient
+                .get('user-balance')
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            return balance;
         }
-        return res;
-    }
-    // Domain
-    /** Returns a list of domains. */
-    async getDomains(options = {
-        temp: true,
-        popular: true
-    }) {
-        let tempDomains = [];
-        if (options.temp === true) {
-            tempDomains = await this.getTempDomains(options.website);
-            tempDomains = tempDomains.map((d) => ({ name: d }));
+        catch (error) {
+            throw new Error('Failed to get balance', { cause: error });
         }
-        let popularDomains = [];
-        if (options.popular === true) {
-            popularDomains = await this.getPopularDomains(options.website);
+    }
+    async getMessage(email, options = {}) {
+        try {
+            const id = this.getEmailId(email);
+            const { status, value, fullmessage } = await this.httpClient
+                .get('mailbox-get-message', { searchParams: { id, full: options.full ? 1 : undefined } })
+                .json();
+            if (status !== 'OK') {
+                if (value === 'WAIT_LINK')
+                    return null;
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            }
+            return options.full || !value ? fullmessage : value;
         }
-        return [...popularDomains, ...tempDomains];
-    }
-    /** Retrieves popular domains resource. */
-    async getPopularDomains(website) {
-        const params = this.cleanParams({
-            site: website,
-            popular: 1
-        });
-        const res = await this.send('/mailbox-zones', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return res.data.popular;
-    }
-    /** Retrieves temporary domains resource. */
-    async getTempDomains(website) {
-        const params = this.cleanParams({
-            site: website
-        });
-        const res = await this.send('/mailbox-get-domains', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return res.data.domains;
-    }
-    // Task
-    /** Finds the task id. */
-    async findTaskId(options) {
-        const params = this.cleanParams({
-            site: options.website,
-            email: options.address
-        });
-        const res = await this.send('/mailbox-get-fresh-id', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return res.data.id;
-    }
-    /** Finds tasks. */
-    async findTasks(options = {}) {
-        const params = this.cleanParams({
-            site: options.website,
-            comment: options.comment,
-            email: options.address,
-            count: options.limit
-        });
-        const res = await this.send('/mailbox-get-bulk', params);
-        if (!res.success)
-            throw new KopeechkaError(res.message);
-        return res.data.items;
-    }
-    // Helper
-    async wait(ms = 0) {
-        return await new Promise((resolve) => setTimeout(resolve, ms));
-    }
-    cleanParams(params = {}) {
-        return Object.fromEntries(Object.entries(params).filter(([_, v]) => v != null));
-    }
-    async send(path, params = {}) {
-        const options = { method: 'GET', retry: { limit: 3 }, compress: true };
-        const query = new URLSearchParams({
-            ...params,
-            token: this.token,
-            type: 'JSON',
-            api: '2.0'
-        }).toString();
-        const url = `${this.baseUrl}${path}?${query}`;
-        const res = await this.request(url, options);
-        const data = await res.json().catch(() => null);
-        if (data == null)
-            throw new Error('Incorrect server response received');
-        return {
-            success: data.status === StatusCodes.ok,
-            message: data.status === StatusCodes.ok ? 'ok' : data.value,
-            data
-        };
-    }
-    async request(url, options) {
-        var _a;
-        const { retry = { limit: 3 }, ...requestOptions } = options;
-        (_a = retry.attempts) !== null && _a !== void 0 ? _a : (retry.attempts = 0);
-        retry.attempts++;
-        const timeout = {};
-        timeout.controller = new AbortController();
-        timeout.id = setTimeout(() => timeout.controller.abort(), 10000);
-        requestOptions.signal = timeout.controller.signal;
-        const res = await fetch__default["default"](url, requestOptions)
-            .then((res) => {
-            clearTimeout(timeout.id);
-            return res;
-        })
-            .catch(() => null);
-        if ((res === null || res === void 0 ? void 0 : res.ok) === true)
-            return res;
-        if (retry.attempts < retry.limit) {
-            await this.wait(Math.pow(2, retry.attempts) * 1000 + 100);
-            return await this.request(url, { retry, ...requestOptions });
+        catch (error) {
+            throw new Error('Failed to get message', { cause: error });
         }
-        throw new Error('Request failed');
+    }
+    async getDomains(website, options = { trusted: true, temporary: true }) {
+        try {
+            const promises = [];
+            if (options.trusted)
+                promises.push(this.fetchTrustedDomains(website));
+            if (options.temporary)
+                promises.push(this.fetchTemporaryDomains(website));
+            return (await Promise.all(promises)).flat();
+        }
+        catch (error) {
+            throw new Error('Failed to get domains', { cause: error });
+        }
+    }
+    async fetchTrustedDomains(website) {
+        try {
+            const { status, value, popular } = await this.httpClient
+                .get('mailbox-zones', { searchParams: { site: website, popular: 1 } })
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            return popular.map((entry) => entry.name);
+        }
+        catch (error) {
+            throw new Error('Failed to fetch trusted domains', { cause: error });
+        }
+    }
+    async fetchTemporaryDomains(website) {
+        try {
+            const { status, value, domains } = await this.httpClient
+                .get('mailbox-get-domains', { searchParams: { site: website } })
+                .json();
+            if (status !== 'OK')
+                throw new Error((value && kopeechka_error_code_enum_1.KopeechkaErrorCode[value]) || value || 'Bad server response');
+            return domains;
+        }
+        catch (error) {
+            throw new Error('Failed to fetch temporary domains', { cause: error });
+        }
+    }
+    createHttpAgent() {
+        const agent = new https_1.Agent({ keepAlive: true, timeout: 65000, maxSockets: 50 });
+        return agent;
+    }
+    createHttpClient() {
+        const client = got_1.default.extend({
+            prefixUrl: 'https://api.kopeechka.store',
+            headers: {
+                accept: 'application/json',
+                'user-agent': 'node-kopeechka-store/1.0',
+            },
+            searchParams: { token: this.clientToken, type: 'JSON', api: '2.0' },
+            agent: { https: this.httpAgent },
+            hooks: { beforeRequest: [() => requestsQueue.add(() => { })] },
+            timeout: 10000,
+            responseType: 'json',
+            throwHttpErrors: true,
+        });
+        return client;
     }
 }
-
-module.exports = Kopeechka;
+exports.default = Kopeechka;

@@ -1,243 +1,102 @@
-# Kopeechka Store JS
+# kopeechka-store
 
-Wrapper around the [kopeechka.store](https://faq.kopeechka.store/api_page/) email api written with TypeScript for NodeJS and Browser.
+> Simple wrapper around [kopeechka.store](https://faq.kopeechka.store/) api.
 
-The service provides you with real and unique email addresses to receive messages.
-
-# Installation
-
-**npm**
+## Install
 
 ```sh
 npm install @sadzurami/kopeechka-store
 ```
 
-**yarn**
-
-```sh
-yarn add @sadzurami/kopeechka-store
-```
-
-**CDN**
-
-```
-<script src="https://cdn.jsdelivr.net/gh/Sadzurami/kopeechka-store@latest/kopeechka.min.js"></script>
-```
-
-# Requirements
-
-Node.js > 15 or any modern browser
-
-# Documentation
-
-## Getting started
+## Usage
 
 ```js
-import Kopeechka from '@sadzurami/kopeechka-store'
+import Kopeechka from '@sadzurami/kopeechka-store';
 
-const kop = new Kopeechka('<personal access token>')
+const key = 'your-api-key';
+const kopeechka = new Kopeechka({ key });
 
-const start = async () => {
-  const address = await kop.getAddress({ website: 'example.com' })
-  console.log(address)
-  //=> abc@gmail.com
-}
+(async () => {
+  const email = await kopeechka.orderEmail('example.com');
+  console.log(`Ordered Email: ${email}`);
 
-start()
+  const message = await kopeechka.getMessage(email);
+  console.log(`Message: ${message}`);
+
+  await kopeechka.cancelEmail(email);
+})();
 ```
 
-## Account
+## API
 
-### Balance
+### constructor(options: ConstructorOptions)
 
-```js
-kop.getBalance().then(console.log)
-```
+Returns a new instance of `Kopeechka`.
 
-## Address
+- `options.key` (string): Api access key.
+- `options.partner` (string | number, optional): Affiliate program id.
 
-### Get new email address
+### instance
 
-Method that gives a Promise returning an email address string.
+#### `.orderEmail(website: string, options: OrderEmailOptions): Promise<string>`
 
-Arguments: **options** (`object`).
+Orders an email address for the specified website.
 
-Options may contain the following fields:
+- `website` (string): The website to order the email address for.
+- `options.domains` (DomainGroup | DomainGroup[] | string | string[], optional): Domain group(s) for the email address.
+- `options.regexp` (string, optional): Regular expression for extracting values from the message.
+- `options.sender` (string, optional): Email address of the sender.
+- `options.subject` (string, optional): Subject of the email.
+- `options.password` (boolean, optional): Switch to get the password of the email address.
+- `options.invenstor` (boolean, optional): Switch to use an email from your own pool.
 
-- **website** (`string`) - Required. The website for which the address is ordered.
-- **domains** (`string` | `string[]`) - Optional. Preferred address domains. Default - random temp domains.
-- **filter** (`object`) - Optional. Message **filtering options**.
+#### `.reorderEmail(website: string, email: string, options: ReorderEmailOptions): Promise<string>`
 
-Filter options may contain the following fields:
+Reorders an email address for the specified website.\
+Use this method to retrieve new messages for the requested email address.
 
-- **sender** (`string`) - Optional. Sender of the message.
-- **subject** (`string`) - Optional. The subject of the message.
+- `website` (string): The website to order the email address for.
+- `email` (string): The email address to reorder.
+- `options.regexp` (string, optional): Regular expression for extracting values from the message.
+- `options.subject` (string, optional): Subject of the email.
+- `options.password` (boolean, optional): Switch to get the password of the email address.
 
-```js
-kop
-  .getAddress({
-    website: 'example.org',
-    domains: ['gmail.com', 'yahoo.com'],
-    // domains: 'outlook.com,aol.com' - also valid
-    filter: {
-      sender: 'noreply@example.org',
-      subject: 'Please confirm your email'
-    }
-  })
-  .then(console.log)
-```
+#### `.cancelEmail(email: string): Promise<void>`
 
-### Reuse address
+Cancels or releases the specified email address.
 
-Method that gives a Promise returning an operation status boolean.
+- `email` (string): The email address to cancel.
 
-Arguments: **options** (`object`).
+#### `.getEmailId(email: string): string`
 
-Options may contain the following fields:
+Retrieves the ID associated with the email address.
 
-- **website** (`string`) - Required. The website for which the address is ordered.
-- **address** (`string`) - Optional. Earlier received email address. Default - last ordered address on this instance, if it exists.
+- `email` (string): The email address to retrieve the ID for.
 
-```js
-kop
-  .reuseAddress({
-    website: 'example.org',
-    address: 'abc@gmail.com' // optional
-  })
-  .then(console.log)
-```
+#### `.getEmailPassword(email: string): string`
 
-### Release address
+Retrieves the password associated with the specified email address.\
+This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email address.
 
-Method that gives a Promise returning an operation status boolean.
+- `email` (string): The email address to retrieve the password for.
 
-Arguments: **id** (`string`).
+#### `.getBalance(): Promise<number>`
 
-- **id** (`string`) - Optional. Task id. Default - id of last ordered address on this instance, if it exists.
+Retrieves the balance of the account.
 
-```js
-kop.releaseAddress('1434984329').then(console.log)
-```
+#### `.getDomains(website: string, options: GetDomainsOptions): Promise<string[]>`
 
-## Message
+Retrieves the domains list for the specified website.
 
-### Receive message
+- `website` (string): The website to get domains for.
+- `options.trusted` (boolean, optional): Switch to get trusted domains. Default is `true`.
+- `options.temporary` (boolean, optional): Switch to get temporary domains. Default is `true`.
 
-Method that gives a Promise returning a message string.
+#### `.getMessage(email: string, options: GetMessageOptions): Promise<string | null>`
 
-Arguments: **options** (`object`).
+Retrieves the message of the specified email address.\
+By default, this method returns only a short value of the message if possible.\
+You can set the `option.full` to `true` to always get the full message instead.
 
-Options may contain the following fields:
-
-- **id** (`string`) - Optional. Task id. Default - id of last ordered address on this instance, if it exists.
-- **timeout** (`number`) - Optional. Timeout of message waiting in ms. Default - 120000.
-- **delay** (`number`) - Optional. Delay between requests in ms. Default - 10000.
-- **full** (`boolean`) - Optional. Retrieves the full body of the message in any case. Specify `false` to get only the parsed part of the message, this can be useful to save bandwidth. Sometimes the server cannot parse a message, in which case the full message will be returned. It's better to get the full message and parse it on your side. Default - true.
-
-```js
-kop
-  .getMessage({
-    id: '1434984329',
-    timeout: 120000,
-    delay: 10000,
-    full: false
-  })
-  .then(console.log)
-```
-
-## Domain
-
-### List Domains
-
-Method that gives a Promise returning an array of domain objects.
-
-Shortcut of [getPopularDomains](#popular-domains-resource) and [getTempDomains](#temporary-domains-resource) methods with compatibility.
-
-Arguments: **options** (`object`).
-
-Options may contain the following fields:
-
-- **website** (`string`) - Optional. The website for which domains are available.
-- **temp** (`boolean`) - Optional. Retrieves temporary domains resource. Dafault - true.
-- **popular** (`boolean`) - Optional. Retrieves popular domains resource. Default - true.
-
-```js
-kop
-  .getDomains({
-    website: 'example.org',
-    popular: true,
-    temp: true
-  })
-  .then(console.log)
-```
-
-### Popular domains resource
-
-Method that gives a Promise returning an array of domain objects.
-
-Arguments: **website** (`string`).
-
-- **website** (`string`) - Optional. The website for which domains are available.
-
-```js
-kop.getPopularDomains('example.com').then(console.log)
-```
-
-### Temporary domains resource
-
-Method that gives a Promise returning an array of domain strings.
-
-Arguments: **website** (`string`).
-
-- **website** (`string`) - Optional. The website for which domains are available.
-
-```js
-kop.getTempDomains('example.com').then(console.log)
-```
-
-## Task
-
-### Find the task id
-
-Method that gives a Promise returning an id string.
-
-Arguments: **options** (`object`).
-
-Options may contain the following fields:
-
-- **website** (`string`) - Required. The website for which the address is ordered.
-- **address** (`string`) - Required. Earlier received email address.
-
-```js
-kop
-  .findTaskId({ website: 'example.org', address: 'abc@gmail.com' })
-  .then(console.log)
-```
-
-### Find tasks
-
-Method that gives a Promise returning an array of task objects.
-
-Arguments: **options** (`object`).
-
-- **website** (`string`) - Required. The website for which the address is ordered.
-- **address** (`string`) - Optional. Earlier received email address.
-- **comment** (`string`) - Optional. Task comment.
-- **limit** (`number`) - Optional. The number of returned tasks. Default - 1.
-
-```js
-kop
-  .findTasks({
-    website: 'example.org',
-    address: 'abc@gmail.com',
-    comment: 'good',
-    limit: 1
-  })
-  .then(console.log)
-```
-
-# Questions And Suggestions
-
-If you have any questions, please contact [service support](https://kopeechka.store/).
-
-If you have any suggestions, please contact me via email [mail.to.sadzurami@gmail.com](mailto:mail.to.sadzurami@gmail.com).
+- `email` (string): The email address to get the message for.
+- `options.full` (boolean, optional): Switch to get the full message.

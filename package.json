@@ -1,56 +1,45 @@
 {
   "name": "@sadzurami/kopeechka-store",
   "version": "1.0.2",
-  "description": "A JavaScript wrapper around the kopeechka.store api.",
-  "main": "dist/kopeechka.js",
-  "module": "dist/kopeechka.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/kopeechka.mjs",
-      "require": "./dist/kopeechka.js"
-    }
-  },
-  "scripts": {
-    "build": "rimraf dist && rollup --config && rimraf *.d.ts"
-  },
+  "description": "Simple wrapper around the kopeechka.store api",
+  "author": "Sadzurami (https://github.com/Sadzurami)",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sadzurami/kopeechka-store.git"
+    "url": "https://github.com/Sadzurami/node-kopeechka-store"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "del-cli dist && tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@isaacs/ttlcache": "^1.4.1",
+    "got": "^11.8.6",
+    "p-queue": "^6"
+  },
+  "devDependencies": {
+    "@sadzurami/eslint-config": "^1.0.1",
+    "@sadzurami/prettier-config": "^1.0.0",
+    "@sadzurami/ts-config": "^1.0.0",
+    "@types/node": "^18",
+    "del-cli": "^6.0.0",
+    "eslint": "^8",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   },
   "keywords": [
     "email",
     "temp-mail",
     "kopeechka",
     "kopeechka-store"
-  ],
-  "files": [
-    "README.md",
-    "dist"
-  ],
-  "author": "Sadzurami",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Sadzurami/kopeechka-store/issues"
-  },
-  "homepage": "https://github.com/Sadzurami/kopeechka-store#readme",
-  "dependencies": {
-    "node-fetch": "2.6.2"
-  },
-  "devDependencies": {
-    "@rollup/plugin-typescript": "^8.5.0",
-    "@types/node-fetch": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "eslint": "^8.0.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-standard-with-typescript": "^23.0.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.79.1",
-    "rollup-plugin-uglify": "^6.0.4",
-    "typescript": "*"
-  }
+  ]
 }
