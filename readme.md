@@ -43,7 +43,7 @@ Returns a new instance of `Kopeechka`.
 Orders an email address for the specified website.
 
 - `website` (string): The website to order the email address for.
-- `options.domains` (string | string[] | KopeechkaDomainGroup | KopeechkaDomainGroup[], optional): Email domain(s) you want to receive.
+- `options.domains` (string | string[], optional): Email domain(s) you want to receive.
 - `options.regexp` (string, optional): Regular expression for extracting values from the message.
 - `options.sender` (string, optional): Email address of the sender.
 - `options.subject` (string, optional): Subject of the email.
