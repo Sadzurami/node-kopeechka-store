@@ -1,6 +1,6 @@
 # kopeechka-store
 
-> Simple wrapper around [kopeechka.store](https://faq.kopeechka.store/) api.
+> Simple wrapper around [kopeechka.store](https://faq.kopeechka.store/) api
 
 ## Install
 
