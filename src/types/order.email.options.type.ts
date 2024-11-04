@@ -9,9 +9,9 @@ export type OrderEmailOptions = {
    *
    * @example
    * domains: 'gmail.com'
-   * domains: DomainGroup.Temporary
+   * domains: KopeechkaDomainGroup.Temporary
    * domains: ['mail.com', 'gmx.com', 'hotmail.com']
-   * domains: [DomainGroup.Gmx, DomainGroup.Mailcom]
+   * domains: [KopeechkaDomainGroup.Gmx, KopeechkaDomainGroup.Mailcom]
    */
   domains?: KopeechkaDomainGroup | KopeechkaDomainGroup[] | string | string[];
 

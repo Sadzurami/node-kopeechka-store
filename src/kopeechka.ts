@@ -16,7 +16,7 @@ const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
 /**
  * Wrapper around for [Kopeechka.Store](https://kopeechka.store/) API.
  */
-export default class Kopeechka {
+export class Kopeechka {
   private readonly baseApiUrl: string = 'https://api.kopeechka.store';
 
   private readonly clientToken: string;
@@ -48,12 +48,12 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka, { DomainGroup } from 'kopeechka';
+   * import { Kopeechka, KopeechkaDomainGroup } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
    *
-   * const email = await kopeechka.orderEmail('example.com', { domains: DomainGroup.Gmx });
+   * const email = await kopeechka.orderEmail('example.com', { domains: KopeechkaDomainGroup.Gmx });
    * ```
    */
   public async orderEmail(website: string, options: OrderEmailOptions = {}) {
@@ -100,7 +100,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka, { DomainGroup } from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -140,8 +140,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * // Using import
-   * import Kopeechka from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -181,7 +180,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -210,7 +209,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -234,7 +233,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -271,7 +270,7 @@ export default class Kopeechka {
    *
    * @example
    * ```
-   * import Kopeechka from 'kopeechka';
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
@@ -309,8 +308,8 @@ export default class Kopeechka {
    * @throws Will throw an error due to network problems, server errors, etc.
    *
    * @example
-   * ```typescript
-   * import Kopeechka from 'kopeechka';
+   * ```
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
