@@ -77,8 +77,8 @@ export class Kopeechka {
 
       if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
 
-      this.cache.set(mail, id);
-      if (password) this.cache.set(`${mail}:password`, password);
+      this.cache.set(`email:id:${mail}`, id);
+      if (password) this.cache.set(`email:password:${password}`, password);
 
       return mail;
     } catch (error) {
@@ -94,7 +94,6 @@ export class Kopeechka {
    * @param website - The website to order the email address for.
    * @param email - The email address to reorder.
    * @param options - Additional options for reordering the email address.
-   * @returns The reordered email address.
    *
    * @throws Will throw an error due to network problems, server errors, etc.
    *
@@ -124,8 +123,8 @@ export class Kopeechka {
 
       if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
 
-      this.cache.set(mail, id);
-      if (password) this.cache.set(`${mail}:password`, password);
+      this.cache.set(`email:id:${mail}`, id);
+      if (password) this.cache.set(`email:password:${password}`, password);
     } catch (error) {
       throw new Error('Failed to reorder email address', { cause: error });
     }
@@ -163,8 +162,8 @@ export class Kopeechka {
 
       if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
 
-      this.cache.delete(id);
-      this.cache.delete(`${email}:password`);
+      this.cache.delete(`email:id:${email}`);
+      this.cache.delete(`email:password:${email}`);
     } catch (error) {
       throw new Error('Failed to cancel email address', { cause: error });
     }
@@ -190,9 +189,9 @@ export class Kopeechka {
    * ```
    */
   public getEmailId(email: string) {
-    if (!this.cache.has(email)) throw new Error('Email id not found');
+    if (!this.cache.has(`email:id:${email}`)) throw new Error('Email id not found');
 
-    return this.cache.get(email) as string;
+    return this.cache.get(`email:id:${email}`) as string;
   }
 
   /**
@@ -219,9 +218,9 @@ export class Kopeechka {
    * ```
    */
   public getEmailPassword(email: string) {
-    if (!this.cache.has(`${email}:password`)) throw new Error('Email password not found');
+    if (!this.cache.has(`email:password:${email}`)) throw new Error('Email password not found');
 
-    return this.cache.get(`${email}:password`) as string;
+    return this.cache.get(`email:password:${email}`) as string;
   }
 
   /**
