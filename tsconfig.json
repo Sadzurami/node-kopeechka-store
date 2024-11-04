@@ -1,14 +1,3 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES2019",
-    "declaration": true,
-    "declarationDir": ".",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true
-  },
-  "include": ["src/*.ts"],
-  "exclude": ["dist"]
+  "extends": "@sadzurami/ts-config"
 }
