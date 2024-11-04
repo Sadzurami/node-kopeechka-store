@@ -18,6 +18,8 @@
   ],
   "scripts": {
     "build": "del-cli dist && tsc",
+    "format": "prettier 'src/**/*.ts' --write",
+    "lint": "eslint 'src/**/*.ts'",
     "prepare": "npm run build"
   },
   "dependencies": {
