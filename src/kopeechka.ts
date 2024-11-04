@@ -374,7 +374,7 @@ export class Kopeechka {
       searchParams: { token: this.clientToken, type: 'JSON', api: '2.0' },
       agent: { https: this.httpAgent },
       hooks: { beforeRequest: [() => requestsQueue.add(() => {})] },
-      timeout: 10000,
+      timeout: 60000,
       responseType: 'json',
       throwHttpErrors: true,
     });
