@@ -5,7 +5,9 @@ import { KopeechkaDomainGroup } from '../enums/kopeechka.domain.group.enum';
  */
 export type OrderEmailOptions = {
   /**
-   * Domain group(s) for the email address.
+   * Email domain(s) you want to receive.
+   *
+   * If an array is provided, the server will return one of them randomly.
    *
    * @example
    * domains: 'gmail.com'
