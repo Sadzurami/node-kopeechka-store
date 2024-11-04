@@ -56,7 +56,7 @@ Orders an email address for the specified website.
 #### `.reorderEmail(website: string, email: string, options: ReorderEmailOptions): Promise<string>`
 
 Reorders an email address for the specified website.\
-Use this method to retrieve new messages for the requested email address.
+Use this method to retrieve additional messages for the requested email address.
 
 - `website` (string): The website to order the email address for.
 - `email` (string): The email address to reorder.
