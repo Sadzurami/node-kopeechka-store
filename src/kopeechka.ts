@@ -34,7 +34,7 @@ export class Kopeechka {
     this.clientPartnerId = options.partner || this.clientPartnerId;
 
     this.httpAgent = options.httpsAgent || this.createHttpAgent();
-    this.httpClient = this.createHttpClient();
+    this.httpClient = this.createHttpClient({ timeout: options.timeout });
   }
 
   /**
@@ -364,7 +364,7 @@ export class Kopeechka {
     return agent;
   }
 
-  private createHttpClient() {
+  private createHttpClient(options: { timeout?: number } = {}) {
     const client = got.extend({
       prefixUrl: this.baseApiUrl,
       headers: {
@@ -374,7 +374,7 @@ export class Kopeechka {
       searchParams: { token: this.clientToken, type: 'JSON', api: '2.0' },
       agent: { https: this.httpAgent },
       hooks: { beforeRequest: [() => requestsQueue.add(() => {})] },
-      timeout: 60000,
+      timeout: options.timeout || 50000,
       responseType: 'json',
       throwHttpErrors: true,
     });

@@ -20,6 +20,11 @@ export type ConstructorOptions = {
   baseUrl?: string;
 
   /**
+   * Api requests timeout in milliseconds.
+   */
+  timeout?: number;
+
+  /**
    * `https.Agent` instance to use for requests.
    */
   httpsAgent?: Agent;
