@@ -36,7 +36,7 @@ Returns a new instance of `Kopeechka`.
 - `options.key` (string): Api access key.
 - `options.partner` (string | number, optional): Affiliate program id.
 
-### instance
+### nstance
 
 #### `.orderEmail(website: string, options: OrderEmailOptions): Promise<string>`
 
@@ -101,7 +101,7 @@ You can set the `option.full` to `true` to always get the full message instead.
 - `email` (string): The email address to get the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
 
-### Enums
+### enums
 
 #### `KopeechkaDomainGroup`
 
