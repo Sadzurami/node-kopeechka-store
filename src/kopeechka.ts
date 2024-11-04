@@ -329,6 +329,39 @@ export class Kopeechka {
     }
   }
 
+  /**
+   * Refreshes the ID associated with the specified email address.
+   *
+   * @param website - The website to refresh the email ID for.
+   * @param email - The email address to refresh the ID for.
+   *
+   * @throws Will throw an error due to network problems, server errors, etc.
+   *
+   * @example
+   * ```
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
+   *
+   * const key = 'your-api-key';
+   * const kopeechka = new Kopeechka({ key });
+   *
+   * const email = await kopeechka.orderEmail('example.com');
+   * await kopeechka.refreshEmailId('example.com', email);
+   * ```
+   */
+  public async refreshEmailId(website: string, email: string) {
+    try {
+      const { status, value, id } = await this.httpClient
+        .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
+        .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string }>();
+
+      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+
+      this.cache.set(`email:id:${email}`, id);
+    } catch (error) {
+      throw new Error('Failed to refresh email id', { cause: error });
+    }
+  }
+
   private async fetchTrustedDomains(website: string) {
     try {
       const { status, value, popular } = await this.httpClient

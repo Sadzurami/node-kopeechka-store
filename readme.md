@@ -76,6 +76,12 @@ Retrieves the ID associated with the email address.
 
 - `email` (string): The email address to retrieve the ID for.
 
+#### `.refreshEmailId(email: string): Promise<void>`
+
+Refreshes the ID associated with the email address.
+
+- `email` (string): The email address to refresh the ID for.
+
 #### `.getEmailPassword(email: string): string`
 
 Retrieves the password associated with the specified email address.\
