@@ -14,7 +14,7 @@ import { ReorderEmailOptions } from './types/reorder.email.options.type';
 const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
 
 /**
- * Wrapper around for [Kopeechka.Store](https://kopeechka.store/) api.
+ * Wrapper around [Kopeechka.Store](https://kopeechka.store/) api.
  */
 export class Kopeechka {
   private readonly baseApiUrl: string = 'https://api.kopeechka.store';
