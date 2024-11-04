@@ -366,7 +366,7 @@ export class Kopeechka {
 
   private createHttpClient() {
     const client = got.extend({
-      prefixUrl: 'https://api.kopeechka.store',
+      prefixUrl: this.baseApiUrl,
       headers: {
         accept: 'application/json',
         'user-agent': 'node-kopeechka-store/1.0',
