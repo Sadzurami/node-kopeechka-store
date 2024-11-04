@@ -78,7 +78,7 @@ export class Kopeechka {
       if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
 
       this.cache.set(`email:id:${mail}`, id);
-      if (password) this.cache.set(`email:password:${password}`, password);
+      if (password) this.cache.set(`email:password:${mail}`, password);
 
       return mail;
     } catch (error) {
@@ -124,7 +124,7 @@ export class Kopeechka {
       if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
 
       this.cache.set(`email:id:${mail}`, id);
-      if (password) this.cache.set(`email:password:${password}`, password);
+      if (password) this.cache.set(`email:password:${mail}`, password);
     } catch (error) {
       throw new Error('Failed to reorder email address', { cause: error });
     }
