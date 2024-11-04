@@ -35,6 +35,9 @@ Returns a new instance of `Kopeechka`.
 
 - `options.key` (string): Api access key.
 - `options.partner` (string | number, optional): Affiliate program id.
+- `options.baseUrl` (string, optional): Base url of the api.
+- `options.timeout` (number, optional): Api requests timeout in milliseconds.
+- `options.httpsAgent`(https.Agent, optional): Https agent to use for requests.
 
 ### nstance
 
@@ -106,36 +109,3 @@ You can set the `option.full` to `true` to always get the full message instead.
 #### `KopeechkaDomainGroup`
 
 Represents a group of domains which can be used to order an email address.
-
-## Examples
-
-### Order Email
-
-```js
-import { Kopeechka, KopeechkaDomainGroup } from '@sadzurami/kopeechka-store';
-
-const gmailEmail = await kopeechka.orderEmail('example.com', {
-  domains: 'gmail.com',
-  password: true,
-});
-
-console.log(`Ordered Gmail Email: ${gmailEmail}`);
-
-const randomTrustedEmail = await kopeechka.orderEmail('example.com', {
-  domains: KopeechkaDomainGroup.Trusted,
-  password: true,
-});
-
-console.log(`Ordered Random Trusted Email: ${randomTrustedEmail}`);
-
-const hotmailOrOutlookEmail = await kopeechka.orderEmail('example.com', {
-  domains: ['hotmail.com', 'outlook.com'],
-  password: true,
-});
-
-console.log(`Ordered Hotmail or Outlook Email: ${hotmailOrOutlookEmail}`);
-
-const kopeechkaDomains = await kopeechka.getDomains('example.com');
-
-console.log(`Kopeechka Domains: ${kopeechkaDomains.join(', ')}`);
-```
