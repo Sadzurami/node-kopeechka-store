@@ -6,6 +6,8 @@ import PQueue from 'p-queue';
 import TTLCache from '@isaacs/ttlcache';
 
 import { ErrorCode } from './enums/error.code.enum';
+import { StatusCode } from './enums/status.code.enum';
+import { KopeechkaError } from './errors/kopeechka.error';
 import { ConstructorOptions } from './types/constructor.options.type';
 import { GetDomainsOptions } from './types/get.domains.options.type';
 import { GetMessageOptions } from './types/get.message.options.type';
@@ -30,11 +32,12 @@ export class Kopeechka {
   private readonly httpClient: Got;
 
   constructor(options: ConstructorOptions) {
+    this.apiBaseUrl = options.baseUrl || this.apiBaseUrl;
+
     this.clientToken = options.key;
     this.clientCurrency = options.currency || this.clientCurrency;
     this.clientPartnerId = options.partner || this.clientPartnerId;
 
-    this.apiBaseUrl = options.baseUrl || this.apiBaseUrl;
     this.httpAgent = options.httpAgent || this.createHttpAgent();
     this.httpClient = this.createHttpClient({ timeout: options.timeout });
   }
@@ -75,9 +78,9 @@ export class Kopeechka {
             soft: this.clientPartnerId,
           },
         })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string; mail?: string; password?: string }>();
+        .json<{ status: StatusCode; value?: ErrorCode; id?: string; mail?: string; password?: string }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -121,9 +124,9 @@ export class Kopeechka {
             password: options.password ? 1 : undefined,
           },
         })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string; mail?: string; password?: string }>();
+        .json<{ status: StatusCode; value?: ErrorCode; id?: string; mail?: string; password?: string }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -160,9 +163,9 @@ export class Kopeechka {
 
       const { status, value } = await this.httpClient
         .get('mailbox-cancel', { searchParams: { id } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string }>();
+        .json<{ status: StatusCode; value?: ErrorCode }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       this.cache.delete(`email:id:${email}`);
       this.cache.delete(`email:password:${email}`);
@@ -246,9 +249,9 @@ export class Kopeechka {
     try {
       const { status, value, balance } = await this.httpClient
         .get('user-balance', { searchParams: { cost: this.clientCurrency } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; balance?: number }>();
+        .json<{ status: StatusCode; value?: ErrorCode; balance?: number }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       return balance;
     } catch (error) {
@@ -286,11 +289,11 @@ export class Kopeechka {
 
       const { status, value, fullmessage } = await this.httpClient
         .get('mailbox-get-message', { searchParams: { id, full: options.full ? 1 : undefined } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; fullmessage?: string }>();
+        .json<{ status: StatusCode; value?: ErrorCode; fullmessage?: string }>();
 
-      if (status !== 'OK') {
-        if (value === 'WAIT_LINK') return null;
-        throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) {
+        if (value === ErrorCode.WaitLink) return null;
+        else throw new KopeechkaError(value);
       }
 
       return options.full || !value ? fullmessage : value;
@@ -354,9 +357,9 @@ export class Kopeechka {
     try {
       const { status, value, id } = await this.httpClient
         .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string }>();
+        .json<{ status: StatusCode; value?: ErrorCode; id?: string }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       this.cache.set(`email:id:${email}`, id);
     } catch (error) {
@@ -369,12 +372,12 @@ export class Kopeechka {
       const { status, value, popular } = await this.httpClient
         .get('mailbox-zones', { searchParams: { site: website, popular: 1, cost: this.clientCurrency } })
         .json<{
-          status: 'OK' | 'ERROR';
-          value?: string;
+          status: StatusCode;
+          value?: ErrorCode;
           popular?: { name: string; cost: string | number; count: number }[];
         }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       let entries = popular;
 
@@ -405,9 +408,9 @@ export class Kopeechka {
     try {
       const { status, value, domains } = await this.httpClient
         .get('mailbox-get-domains', { searchParams: { site: website } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; count?: number; domains?: string[] }>();
+        .json<{ status: StatusCode; value?: ErrorCode; count?: number; domains?: string[] }>();
 
-      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
 
       return domains;
     } catch (error) {
