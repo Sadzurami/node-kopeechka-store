@@ -69,12 +69,12 @@ export class Kopeechka {
         .get('mailbox-get-email', {
           searchParams: {
             site: website,
-            regex: options.regexp,
-            sender: options.sender,
-            subject: options.subject,
+            regex: options.regexp || undefined,
+            sender: options.sender || undefined,
+            subject: options.subject || undefined,
             password: options.password ? 1 : undefined,
             invenstor: options.invenstor ? 1 : undefined,
-            mail_type: domains,
+            mail_type: domains || undefined,
             soft: this.clientPartnerId,
           },
         })
@@ -119,8 +119,8 @@ export class Kopeechka {
           searchParams: {
             site: website,
             email: email,
-            regex: options.regexp,
-            subject: options.subject,
+            regex: options.regexp || undefined,
+            subject: options.subject || undefined,
             password: options.password ? 1 : undefined,
           },
         })
@@ -370,7 +370,7 @@ export class Kopeechka {
   private async fetchTrustedDomains(website?: string, options: Pick<GetDomainsOptions, 'count' | 'price'> = {}) {
     try {
       const { status, value, popular } = await this.httpClient
-        .get('mailbox-zones', { searchParams: { site: website, popular: 1, cost: this.clientCurrency } })
+        .get('mailbox-zones', { searchParams: { site: website || undefined, popular: 1, cost: this.clientCurrency } })
         .json<{
           status: StatusCode;
           value?: ErrorCode;
@@ -407,7 +407,7 @@ export class Kopeechka {
   private async fetchKopeechkaDomains(website?: string) {
     try {
       const { status, value, domains } = await this.httpClient
-        .get('mailbox-get-domains', { searchParams: { site: website } })
+        .get('mailbox-get-domains', { searchParams: { site: website || undefined } })
         .json<{ status: StatusCode; value?: ErrorCode; count?: number; domains?: string[] }>();
 
       if (status !== StatusCode.Success) throw new KopeechkaError(value);
