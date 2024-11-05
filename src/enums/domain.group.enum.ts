@@ -4,18 +4,20 @@
 export enum DomainGroup {
   /**
    * Any domain owned by `Kopeechka`.
-   * Like `*.site`, `*.blog`, etc.
+   *
+   * Like `*.site`, `*.blog`, `*.pro` etc.
    */
   Kopeechka = 'ALL',
 
   /**
    * Any trusted email domain.
-   * Like `gmail.com`, `yahoo.com`, etc.
+   *
+   * Like `gmail.com`, `yahoo.com` etc.
    */
   Trusted = 'REAL',
 
   /**
-   * Any private email domain.
+   * Any private domain owned by client.
    */
   Private = 'mine',
 
