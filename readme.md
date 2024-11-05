@@ -95,11 +95,11 @@ Refreshes the id associated with the email address.
 
 Retrieves the balance of the account.
 
-#### `.getDomains(website: string, options?: GetDomainsOptions): Promise<string[]>`
+#### `.getDomains(website?: string, options?: GetDomainsOptions): Promise<string[]>`
 
 Retrieves the domains list for the specified website.
 
-- `website` (string): The website to get domains for.
+- `website` (string, optional): The website to get domains for.
 - `options.trusted` (boolean, optional): Switch to get trusted domains. Default is `true`.
 - `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains. Default is `true`.
 - `options.count` (object, optional): Switch to filter domains by their count.
