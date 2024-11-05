@@ -268,7 +268,7 @@ export class Kopeechka {
    *
    * @param email - The email address to get the message for.
    * @param options - Additional options for getting the message.
-   * @returns Short value or full message, or `null` if the message is not received yet.
+   * @returns Parsed value or full message, or `null` if the message is not found.
    *
    * @throws Will throw an error due to network problems, server errors, etc.
    *
@@ -292,14 +292,67 @@ export class Kopeechka {
         .json<{ status: StatusCode; value?: ErrorCode; fullmessage?: string }>();
 
       if (status !== StatusCode.Success) {
-        if (value === ErrorCode.WaitLink) return null;
+        if (value === ErrorCode.NoMessage) return null;
         else throw new KopeechkaError(value);
       }
 
-      return options.full || !value ? fullmessage : value;
+      const message = options.full || !value ? fullmessage : value;
+
+      return message;
     } catch (error) {
       throw new Error('Failed to get message', { cause: error });
     }
+  }
+
+  /**
+   * Like `.getMessage()` but waits for the message and throws if it's not found.
+   *
+   * @param email - The email address to get the message for.
+   * @param options - Additional options for getting the message.
+   * @param timeout - The time to wait for the message in milliseconds. Default: `100` seconds.
+   * @returns Parsed value or full message.
+   *
+   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error if the message is not found for given time.
+   *
+   * @example
+   * ```
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
+   *
+   * const key = 'your-api-key';
+   * const kopeechka = new Kopeechka({ key });
+   *
+   * const email = await kopeechka.orderEmail('example.com');
+   * const message = await kopeechka.waitMessage(email);
+   * ```
+   */
+  public async waitMessage(email: string, options: GetMessageOptions = {}, timeout: number = 100 * 1000) {
+    return await new Promise<string>((resolve, reject) => {
+      const start: number = Date.now();
+      const delay: number = 5000;
+
+      const check = async () => {
+        try {
+          const message = await this.getMessage(email, options);
+
+          if (message !== null) {
+            resolve(message);
+            return;
+          }
+
+          if (Date.now() - start >= timeout) {
+            reject(new KopeechkaError(ErrorCode.NoMessage));
+            return;
+          }
+
+          setTimeout(check, delay);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      check();
+    });
   }
 
   /**
