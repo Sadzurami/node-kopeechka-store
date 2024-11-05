@@ -1,4 +1,4 @@
-import { KopeechkaDomainGroup } from '../enums/kopeechka.domain.group.enum';
+import { DomainGroup } from '../enums/domain.group.enum';
 
 /**
  * Options for ordering an email address.
@@ -11,11 +11,11 @@ export type OrderEmailOptions = {
    *
    * @example
    * domains: 'gmail.com'
-   * domains: KopeechkaDomainGroup.Temporary
+   * domains: DomainGroup.Kopeechka
    * domains: ['mail.com', 'gmx.com', 'hotmail.com']
-   * domains: [KopeechkaDomainGroup.Gmx, KopeechkaDomainGroup.Mailcom]
+   * domains: [DomainGroup.Gmx, DomainGroup.Mailcom]
    */
-  domains?: KopeechkaDomainGroup | KopeechkaDomainGroup[] | string | string[];
+  domains?: string | string[] | DomainGroup | DomainGroup[];
 
   /**
    * Regular expression for extracting values from the message.

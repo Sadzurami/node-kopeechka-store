@@ -4,7 +4,7 @@ import PQueue from 'p-queue';
 
 import TTLCache from '@isaacs/ttlcache';
 
-import { KopeechkaErrorCode } from './enums/kopeechka.error.code.enum';
+import { ErrorCode } from './enums/error.code.enum';
 import { ConstructorOptions } from './types/constructor.options.type';
 import { GetDomainsOptions } from './types/get.domains.options.type';
 import { GetMessageOptions } from './types/get.message.options.type';
@@ -48,12 +48,12 @@ export class Kopeechka {
    *
    * @example
    * ```
-   * import { Kopeechka, KopeechkaDomainGroup } from '@sadzurami/kopeechka-store';
+   * import { Kopeechka, DomainGroup } from '@sadzurami/kopeechka-store';
    *
    * const key = 'your-api-key';
    * const kopeechka = new Kopeechka({ key });
    *
-   * const email = await kopeechka.orderEmail('example.com', { domains: KopeechkaDomainGroup.Gmx });
+   * const email = await kopeechka.orderEmail('example.com', { domains: DomainGroup.Gmx });
    * ```
    */
   public async orderEmail(website: string, options: OrderEmailOptions = {}) {
@@ -75,7 +75,7 @@ export class Kopeechka {
         })
         .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string; mail?: string; password?: string }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -121,7 +121,7 @@ export class Kopeechka {
         })
         .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string; mail?: string; password?: string }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -160,7 +160,7 @@ export class Kopeechka {
         .get('mailbox-cancel', { searchParams: { id } })
         .json<{ status: 'OK' | 'ERROR'; value?: string }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       this.cache.delete(`email:id:${email}`);
       this.cache.delete(`email:password:${email}`);
@@ -246,7 +246,7 @@ export class Kopeechka {
         .get('user-balance')
         .json<{ status: 'OK' | 'ERROR'; value?: string; balance?: number }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       return balance;
     } catch (error) {
@@ -288,7 +288,7 @@ export class Kopeechka {
 
       if (status !== 'OK') {
         if (value === 'WAIT_LINK') return null;
-        throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+        throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
       }
 
       return options.full || !value ? fullmessage : value;
@@ -316,12 +316,12 @@ export class Kopeechka {
    * const domains = await kopeechka.getDomains('example.com');
    * ```
    */
-  public async getDomains(website: string, options: GetDomainsOptions = { trusted: true, temporary: true }) {
+  public async getDomains(website: string, options: GetDomainsOptions = { trusted: true, kopeechka: true }) {
     try {
       const promises: Promise<string[]>[] = [];
 
       if (options.trusted) promises.push(this.fetchTrustedDomains(website));
-      if (options.temporary) promises.push(this.fetchTemporaryDomains(website));
+      if (options.kopeechka) promises.push(this.fetchKopeechkaDomains(website));
 
       return (await Promise.all(promises)).flat();
     } catch (error) {
@@ -354,7 +354,7 @@ export class Kopeechka {
         .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
         .json<{ status: 'OK' | 'ERROR'; value?: string; id?: string }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       this.cache.set(`email:id:${email}`, id);
     } catch (error) {
@@ -368,7 +368,7 @@ export class Kopeechka {
         .get('mailbox-zones', { searchParams: { site: website, popular: 1 } })
         .json<{ status: 'OK' | 'ERROR'; value?: string; popular?: { name: string; cost: string; count: number }[] }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       return popular.map((entry) => entry.name);
     } catch (error) {
@@ -376,17 +376,17 @@ export class Kopeechka {
     }
   }
 
-  private async fetchTemporaryDomains(website: string) {
+  private async fetchKopeechkaDomains(website: string) {
     try {
       const { status, value, domains } = await this.httpClient
         .get('mailbox-get-domains', { searchParams: { site: website } })
         .json<{ status: 'OK' | 'ERROR'; value?: string; count?: number; domains?: string[] }>();
 
-      if (status !== 'OK') throw new Error((value && KopeechkaErrorCode[value]) || value || 'Bad server response');
+      if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
       return domains;
     } catch (error) {
-      throw new Error('Failed to fetch temporary domains', { cause: error });
+      throw new Error('Failed to fetch kopeechka domains', { cause: error });
     }
   }
 

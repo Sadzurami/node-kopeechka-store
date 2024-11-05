@@ -1,14 +1,16 @@
 /**
- * Enum for Kopeechka Domain groups.
+ * Enum for domain groups.
  */
-export enum KopeechkaDomainGroup {
+export enum DomainGroup {
   /**
-   * Any temporary email domain.
+   * Any domain owned by `Kopeechka`.
+   * Like `*.site`, `*.blog`, etc.
    */
-  Temporary = 'ALL',
+  Kopeechka = 'ALL',
 
   /**
    * Any trusted email domain.
+   * Like `gmail.com`, `yahoo.com`, etc.
    */
   Trusted = 'REAL',
 

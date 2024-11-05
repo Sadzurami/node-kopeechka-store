@@ -1,7 +1,7 @@
 /**
- * Enum for Kopeechka error codes.
+ * Enum for error codes.
  */
-export enum KopeechkaErrorCode {
+export enum ErrorCode {
   BAD_SITE = 'Website not found',
   BAD_TOKEN = 'Authorization error',
   BAD_EMAIL = 'Email address not found',

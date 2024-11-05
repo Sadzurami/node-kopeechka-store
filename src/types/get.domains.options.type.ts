@@ -10,9 +10,9 @@ export type GetDomainsOptions = {
   trusted?: boolean;
 
   /**
-   * Switch to get temporary domains.
+   * Switch to get Kopeechka domains.
    *
    * @default true
    */
-  temporary?: boolean;
+  kopeechka?: boolean;
 };

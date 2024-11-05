@@ -100,7 +100,7 @@ Retrieves the domains list for the specified website.
 
 - `website` (string): The website to get domains for.
 - `options.trusted` (boolean, optional): Switch to get trusted domains. Default is `true`.
-- `options.temporary` (boolean, optional): Switch to get temporary domains. Default is `true`.
+- `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains. Default is `true`.
 
 #### `.getMessage(email: string, options: GetMessageOptions): Promise<string | null>`
 
@@ -113,6 +113,6 @@ You can set the `option.full` to `true` to always get the full message instead.
 
 ### enums
 
-#### `KopeechkaDomainGroup`
+#### `DomainGroup`
 
 Represents a group of domains which can be used to order an email address.
