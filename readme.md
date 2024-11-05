@@ -102,10 +102,8 @@ Retrieves the domains list for the specified website.
 - `website` (string, optional): The website to get domains for.
 - `options.trusted` (boolean, optional): Switch to get trusted domains. Default is `true`.
 - `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains. Default is `true`.
-- `options.count` (object, optional): Switch to filter domains by their count.
 - `options.count.min` (number, optional): Minimum count of the domain.
 - `options.count.max` (number, optional): Maximum count of the domain.
-- `options.price` (object, optional): Switch to filter domains by their price.
 - `options.price.min` (number, optional): Minimum price of the domain.
 - `options.price.max` (number, optional): Maximum price of the domain.
 
@@ -117,6 +115,14 @@ You can set the `option.full` to `true` to always get the full message instead.
 
 - `email` (string): The email address to get the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
+
+#### `.waitMessage(email: string, options?: GetMessageOptions, timeout?: number): Promise<string>`
+
+Like `.getMessage()` but waits for the message and throws if it's not found.
+
+- `email` (string): The email address to wait for the message for.
+- `options.full` (boolean, optional): Switch to get the full message.
+- `timeout` (number, optional): Timeout in milliseconds to wait for the message.
 
 ### errors
 
