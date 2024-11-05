@@ -7,6 +7,8 @@ export type OrderEmailOptions = {
   /**
    * Email domain(s) you want to get.
    *
+   * If omitted, the server will return any domain owned by `Kopeechka`.
+   *
    * If an array or group of domains is provided, the server will return one of them randomly.
    *
    * @example
