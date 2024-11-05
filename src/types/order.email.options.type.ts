@@ -5,9 +5,9 @@ import { DomainGroup } from '../enums/domain.group.enum';
  */
 export type OrderEmailOptions = {
   /**
-   * Email domain(s) you want to receive.
+   * Email domain(s) you want to get.
    *
-   * If an array is provided, the server will return one of them randomly.
+   * If an array or group of domains is provided, the server will return one of them randomly.
    *
    * @example
    * domains: 'gmail.com'
