@@ -4,8 +4,8 @@
 export enum ErrorMessage {
   BAD_SITE = 'Website not found',
   BAD_EMAIL = 'Email not found',
-  BAD_TOKEN = 'Authentication error',
-  WAIT_LINK = 'Message not received',
+  BAD_TOKEN = 'Client not found',
+  WAIT_LINK = 'Message not found',
   BAD_DOMAIN = 'Domain not found',
   BAD_BALANCE = 'Low balance',
   SYSTEM_ERROR = 'Server error',
