@@ -77,19 +77,19 @@ Retrieves the id associated with the email address.
 
 - `email` (string): The email address to retrieve the id for.
 
-#### `.refreshEmailId(website: string, email: string): Promise<void>`
-
-Refreshes the id associated with the email address.
-
-- `website` (string): The website to refresh email address for.
-- `email` (string): The email address to refresh the id for.
-
 #### `.getEmailPassword(email: string): string`
 
 Retrieves the password associated with the specified email address.\
 This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email address.
 
 - `email` (string): The email address to retrieve the password for.
+
+#### `.refreshEmailId(website: string, email: string): Promise<void>`
+
+Refreshes the id associated with the email address.
+
+- `website` (string): The website to refresh email address for.
+- `email` (string): The email address to refresh the id for.
 
 #### `.getBalance(): Promise<number>`
 
