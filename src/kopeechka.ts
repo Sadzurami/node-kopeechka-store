@@ -18,7 +18,7 @@ const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
  * Wrapper around [Kopeechka.Store](https://kopeechka.store/) api.
  */
 export class Kopeechka {
-  private readonly baseApiUrl: string = 'https://api.kopeechka.store';
+  private readonly apiBaseUrl: string = 'https://api.kopeechka.store';
 
   private readonly clientToken: string;
   private readonly clientCurrency: 'USD' | 'RUB' = 'USD';
@@ -30,12 +30,11 @@ export class Kopeechka {
   private readonly httpClient: Got;
 
   constructor(options: ConstructorOptions) {
-    this.baseApiUrl = options.baseUrl || this.baseApiUrl;
-
     this.clientToken = options.key;
     this.clientCurrency = options.currency || this.clientCurrency;
     this.clientPartnerId = options.partner || this.clientPartnerId;
 
+    this.apiBaseUrl = options.baseUrl || this.apiBaseUrl;
     this.httpAgent = options.httpAgent || this.createHttpAgent();
     this.httpClient = this.createHttpClient({ timeout: options.timeout });
   }
@@ -417,7 +416,7 @@ export class Kopeechka {
   }
 
   private createHttpAgent() {
-    const useSSL = this.baseApiUrl.startsWith('https://');
+    const useSSL = this.apiBaseUrl.startsWith('https://');
 
     const options = { keepAlive: true, timeout: 65000, maxSockets: 50 };
 
@@ -427,10 +426,10 @@ export class Kopeechka {
   }
 
   private createHttpClient(options: { timeout?: number } = {}) {
-    const useSSL = this.baseApiUrl.startsWith('https://');
+    const useSSL = this.apiBaseUrl.startsWith('https://');
 
     const client = got.extend({
-      prefixUrl: this.baseApiUrl,
+      prefixUrl: this.apiBaseUrl,
       headers: {
         accept: 'application/json',
         'user-agent': 'node-kopeechka-store/1.0',
