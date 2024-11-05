@@ -246,7 +246,7 @@ export class Kopeechka {
   public async getBalance() {
     try {
       const { status, value, balance } = await this.httpClient
-        .get('user-balance')
+        .get('user-balance', { searchParams: { cost: this.clientCurrency } })
         .json<{ status: 'OK' | 'ERROR'; value?: string; balance?: number }>();
 
       if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');

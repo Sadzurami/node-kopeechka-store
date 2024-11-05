@@ -16,7 +16,7 @@ export type ConstructorOptions = {
   partner?: string | number;
 
   /**
-   * Currency to use for the prices.
+   * Currency to use for balance and prices.
    * @default 'USD'
    */
   currency?: 'USD' | 'RUB';
