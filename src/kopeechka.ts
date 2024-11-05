@@ -1,5 +1,6 @@
 import got, { Got } from 'got';
-import { Agent } from 'https';
+import { Agent as HttpAgent } from 'http';
+import { Agent as HttpsAgent } from 'https';
 import PQueue from 'p-queue';
 
 import TTLCache from '@isaacs/ttlcache';
@@ -24,7 +25,7 @@ export class Kopeechka {
 
   private readonly cache: TTLCache<string, any> = new TTLCache({ ttl: 15 * 60 * 1000 });
 
-  private readonly httpAgent: Agent;
+  private readonly httpAgent: HttpAgent | HttpsAgent;
   private readonly httpClient: Got;
 
   constructor(options: ConstructorOptions) {
@@ -33,7 +34,7 @@ export class Kopeechka {
     this.clientToken = options.key;
     this.clientPartnerId = options.partner || this.clientPartnerId;
 
-    this.httpAgent = options.httpsAgent || this.createHttpAgent();
+    this.httpAgent = options.httpAgent || this.createHttpAgent();
     this.httpClient = this.createHttpClient({ timeout: options.timeout });
   }
 
@@ -391,12 +392,18 @@ export class Kopeechka {
   }
 
   private createHttpAgent() {
-    const agent = new Agent({ keepAlive: true, timeout: 65000, maxSockets: 50 });
+    const useSSL = this.baseApiUrl.startsWith('https://');
+
+    const options = { keepAlive: true, timeout: 65000, maxSockets: 50 };
+
+    const agent = useSSL ? new HttpsAgent(options) : new HttpAgent(options);
 
     return agent;
   }
 
   private createHttpClient(options: { timeout?: number } = {}) {
+    const useSSL = this.baseApiUrl.startsWith('https://');
+
     const client = got.extend({
       prefixUrl: this.baseApiUrl,
       headers: {
@@ -404,7 +411,7 @@ export class Kopeechka {
         'user-agent': 'node-kopeechka-store/1.0',
       },
       searchParams: { token: this.clientToken, type: 'JSON', api: '2.0' },
-      agent: { https: this.httpAgent },
+      agent: useSSL ? { https: this.httpAgent as any } : { http: this.httpAgent },
       hooks: { beforeRequest: [() => requestsQueue.add(() => {})] },
       timeout: options.timeout || 50000,
       responseType: 'json',
