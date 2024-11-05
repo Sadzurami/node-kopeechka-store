@@ -54,7 +54,7 @@ Orders an email address for the specified website.
 - `options.password` (boolean, optional): Switch to get the password of the email address.
 - `options.invenstor` (boolean, optional): Switch to use an email from your own pool.
 
-#### `.reorderEmail(website: string, email: string, options?: ReorderEmailOptions): Promise<string>`
+#### `.reorderEmail(website: string, email: string, options?: ReorderEmailOptions): Promise<void>`
 
 Reorders an email address for the specified website.\
 Use this method to retrieve additional messages for the requested email address.
