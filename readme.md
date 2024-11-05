@@ -118,8 +118,32 @@ You can set the `option.full` to `true` to always get the full message instead.
 - `email` (string): The email address to get the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
 
+### errors
+
+#### `KopeechkaError`
+
+Error class for errors thrown by the api.
+
+- `code` (string): Error code returned by the api.
+
 ### enums
 
 #### `DomainGroup`
 
 Shortcuts for domain groups.
+
+#### `ErrorCode`
+
+Error codes returned by the api.
+
+#### `ErrorMessage`
+
+Mapped error messages for the error codes.
+
+#### `StatusCode`
+
+Status codes returned by the api.
+
+## Related
+
+- [kopeechka-s](https://github.com/Sadzurami/kopeechka-s) - Browser Automation Studio wrapper around the kopeechka.store api
