@@ -200,6 +200,39 @@ export class Kopeechka {
   }
 
   /**
+   * Refreshes the id associated with the specified email address.
+   *
+   * @param website - The website to refresh the email id for.
+   * @param email - The email address to refresh the id for.
+   *
+   * @throws Will throw an error due to network problems, server errors, etc.
+   *
+   * @example
+   * ```
+   * import { Kopeechka } from '@sadzurami/kopeechka-store';
+   *
+   * const key = 'your-api-key';
+   * const kopeechka = new Kopeechka({ key });
+   *
+   * const email = await kopeechka.orderEmail('example.com');
+   * await kopeechka.refreshEmailId('example.com', email);
+   * ```
+   */
+  public async refreshEmailId(website: string, email: string) {
+    try {
+      const { status, value, id } = await this.httpClient
+        .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
+        .json<{ status: StatusCode; value?: ErrorCode; id?: string }>();
+
+      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+
+      this.cache.set(`email:id:${email}`, id);
+    } catch (error) {
+      throw new Error('Failed to refresh email id', { cause: error });
+    }
+  }
+
+  /**
    * Retrieves the password associated with the specified email address.
    *
    * This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email address.
@@ -384,39 +417,6 @@ export class Kopeechka {
       return (await Promise.all(promises)).flat();
     } catch (error) {
       throw new Error('Failed to get domains', { cause: error });
-    }
-  }
-
-  /**
-   * Refreshes the id associated with the specified email address.
-   *
-   * @param website - The website to refresh the email id for.
-   * @param email - The email address to refresh the id for.
-   *
-   * @throws Will throw an error due to network problems, server errors, etc.
-   *
-   * @example
-   * ```
-   * import { Kopeechka } from '@sadzurami/kopeechka-store';
-   *
-   * const key = 'your-api-key';
-   * const kopeechka = new Kopeechka({ key });
-   *
-   * const email = await kopeechka.orderEmail('example.com');
-   * await kopeechka.refreshEmailId('example.com', email);
-   * ```
-   */
-  public async refreshEmailId(website: string, email: string) {
-    try {
-      const { status, value, id } = await this.httpClient
-        .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
-        .json<{ status: StatusCode; value?: ErrorCode; id?: string }>();
-
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
-
-      this.cache.set(`email:id:${email}`, id);
-    } catch (error) {
-      throw new Error('Failed to refresh email id', { cause: error });
     }
   }
 
