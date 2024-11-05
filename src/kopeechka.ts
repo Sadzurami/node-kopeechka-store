@@ -321,7 +321,7 @@ export class Kopeechka {
    * const domains = await kopeechka.getDomains('example.com');
    * ```
    */
-  public async getDomains(website: string, options: GetDomainsOptions = { trusted: true, kopeechka: true }) {
+  public async getDomains(website?: string, options: GetDomainsOptions = { trusted: true, kopeechka: true }) {
     try {
       const promises: Promise<string[]>[] = [];
 
@@ -367,7 +367,7 @@ export class Kopeechka {
     }
   }
 
-  private async fetchTrustedDomains(website: string, options: Pick<GetDomainsOptions, 'count' | 'price'> = {}) {
+  private async fetchTrustedDomains(website?: string, options: Pick<GetDomainsOptions, 'count' | 'price'> = {}) {
     try {
       const { status, value, popular } = await this.httpClient
         .get('mailbox-zones', { searchParams: { site: website, popular: 1, cost: this.clientCurrency } })
@@ -404,7 +404,7 @@ export class Kopeechka {
     }
   }
 
-  private async fetchKopeechkaDomains(website: string) {
+  private async fetchKopeechkaDomains(website?: string) {
     try {
       const { status, value, domains } = await this.httpClient
         .get('mailbox-get-domains', { searchParams: { site: website } })
