@@ -381,6 +381,7 @@ export class Kopeechka {
           setTimeout(check, delay);
         } catch (error) {
           reject(error);
+          return;
         }
       };
 
