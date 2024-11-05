@@ -16,16 +16,16 @@ export type ConstructorOptions = {
   partner?: string | number;
 
   /**
-   * Base url for the api requests.
-   * @default 'https://api.kopeechka.store'
-   */
-  baseUrl?: string;
-
-  /**
    * Currency to use for the prices.
    * @default 'USD'
    */
   currency?: 'USD' | 'RUB';
+
+  /**
+   * Base url for the api requests.
+   * @default 'https://api.kopeechka.store'
+   */
+  baseUrl?: string;
 
   /**
    * Api requests timeout in milliseconds.
