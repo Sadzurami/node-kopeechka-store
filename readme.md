@@ -35,13 +35,14 @@ Returns a new instance of `Kopeechka`.
 
 - `options.key` (string): Api access key.
 - `options.partner` (string | number, optional): Affiliate program id.
+- `options.currency` (string, optional): Currency to use for the prices.
 - `options.baseUrl` (string, optional): Base url of the api.
 - `options.timeout` (number, optional): Api requests timeout in milliseconds.
-- `options.httpsAgent`(https.Agent, optional): Https agent to use for requests.
+- `options.httpAgent`(https.Agent | http.Agent, optional): Http agent to use for requests.
 
 ### instance
 
-#### `.orderEmail(website: string, options: OrderEmailOptions): Promise<string>`
+#### `.orderEmail(website: string, options?: OrderEmailOptions): Promise<string>`
 
 Orders an email address for the specified website.
 
@@ -53,7 +54,7 @@ Orders an email address for the specified website.
 - `options.password` (boolean, optional): Switch to get the password of the email address.
 - `options.invenstor` (boolean, optional): Switch to use an email from your own pool.
 
-#### `.reorderEmail(website: string, email: string, options: ReorderEmailOptions): Promise<string>`
+#### `.reorderEmail(website: string, email: string, options?: ReorderEmailOptions): Promise<string>`
 
 Reorders an email address for the specified website.\
 Use this method to retrieve additional messages for the requested email address.
@@ -94,15 +95,21 @@ This password allows access to [web interface](https://webmail.kopeechka.store/)
 
 Retrieves the balance of the account.
 
-#### `.getDomains(website: string, options: GetDomainsOptions): Promise<string[]>`
+#### `.getDomains(website: string, options?: GetDomainsOptions): Promise<string[]>`
 
 Retrieves the domains list for the specified website.
 
 - `website` (string): The website to get domains for.
 - `options.trusted` (boolean, optional): Switch to get trusted domains. Default is `true`.
 - `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains. Default is `true`.
+- `options.count` (object, optional): Switch to filter domains by their count.
+- `options.count.min` (number, optional): Minimum count of the domain.
+- `options.count.max` (number, optional): Maximum count of the domain.
+- `options.price` (object, optional): Switch to filter domains by their price.
+- `options.price.min` (number, optional): Minimum price of the domain.
+- `options.price.max` (number, optional): Maximum price of the domain.
 
-#### `.getMessage(email: string, options: GetMessageOptions): Promise<string | null>`
+#### `.getMessage(email: string, options?: GetMessageOptions): Promise<string | null>`
 
 Retrieves the message of the specified email address.\
 By default, this method returns only a short value of the message if possible.\
@@ -115,4 +122,4 @@ You can set the `option.full` to `true` to always get the full message instead.
 
 #### `DomainGroup`
 
-Represents a group of domains which can be used to order an email address.
+Shortcuts for domain groups.
