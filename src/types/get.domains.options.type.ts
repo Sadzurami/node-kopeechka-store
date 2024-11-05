@@ -3,6 +3,13 @@
  */
 export type GetDomainsOptions = {
   /**
+   * Switch to get Kopeechka domains.
+   *
+   * @default true
+   */
+  kopeechka?: boolean;
+
+  /**
    * Switch to get trusted domains.
    *
    * @default true
@@ -10,9 +17,22 @@ export type GetDomainsOptions = {
   trusted?: boolean;
 
   /**
-   * Switch to get Kopeechka domains.
+   * Filter domains by their count.
    *
-   * @default true
+   * **Note:** Only available for trusted domains.
    */
-  kopeechka?: boolean;
+  count?: {
+    min?: number;
+    max?: number;
+  };
+
+  /**
+   * Filter domains by their price.
+   *
+   * **Note:** Only available for trusted domains.
+   */
+  price?: {
+    min?: number;
+    max?: number;
+  };
 };

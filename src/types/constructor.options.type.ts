@@ -22,6 +22,12 @@ export type ConstructorOptions = {
   baseUrl?: string;
 
   /**
+   * Currency to use for the prices.
+   * @default 'USD'
+   */
+  currency?: 'USD' | 'RUB';
+
+  /**
    * Api requests timeout in milliseconds.
    * @default 50000
    */

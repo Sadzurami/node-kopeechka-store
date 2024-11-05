@@ -21,6 +21,7 @@ export class Kopeechka {
   private readonly baseApiUrl: string = 'https://api.kopeechka.store';
 
   private readonly clientToken: string;
+  private readonly clientCurrency: 'USD' | 'RUB' = 'USD';
   private readonly clientPartnerId: string | number = '7';
 
   private readonly cache: TTLCache<string, any> = new TTLCache({ ttl: 15 * 60 * 1000 });
@@ -32,6 +33,7 @@ export class Kopeechka {
     this.baseApiUrl = options.baseUrl || this.baseApiUrl;
 
     this.clientToken = options.key;
+    this.clientCurrency = options.currency || this.clientCurrency;
     this.clientPartnerId = options.partner || this.clientPartnerId;
 
     this.httpAgent = options.httpAgent || this.createHttpAgent();
@@ -321,7 +323,7 @@ export class Kopeechka {
     try {
       const promises: Promise<string[]>[] = [];
 
-      if (options.trusted) promises.push(this.fetchTrustedDomains(website));
+      if (options.trusted) promises.push(this.fetchTrustedDomains(website, options));
       if (options.kopeechka) promises.push(this.fetchKopeechkaDomains(website));
 
       return (await Promise.all(promises)).flat();
@@ -363,15 +365,38 @@ export class Kopeechka {
     }
   }
 
-  private async fetchTrustedDomains(website: string) {
+  private async fetchTrustedDomains(website: string, options: Pick<GetDomainsOptions, 'count' | 'price'> = {}) {
     try {
       const { status, value, popular } = await this.httpClient
-        .get('mailbox-zones', { searchParams: { site: website, popular: 1 } })
-        .json<{ status: 'OK' | 'ERROR'; value?: string; popular?: { name: string; cost: string; count: number }[] }>();
+        .get('mailbox-zones', { searchParams: { site: website, popular: 1, cost: this.clientCurrency } })
+        .json<{
+          status: 'OK' | 'ERROR';
+          value?: string;
+          popular?: { name: string; cost: string | number; count: number }[];
+        }>();
 
       if (status !== 'OK') throw new Error((value && ErrorCode[value]) || value || 'Bad server response');
 
-      return popular.map((entry) => entry.name);
+      let entries = popular;
+
+      if (options.count) {
+        entries = entries.filter((entry) => {
+          if (options.count.min && entry.count < options.count.min) return false;
+          if (options.count.max && entry.count > options.count.max) return false;
+          return true;
+        });
+      }
+
+      if (options.price) {
+        entries = entries.filter((entry) => {
+          const cost = Number(entry.cost.toString());
+          if (options.price.min && cost < options.price.min) return false;
+          if (options.price.max && cost > options.price.max) return false;
+          return true;
+        });
+      }
+
+      return entries.map((entry) => entry.name);
     } catch (error) {
       throw new Error('Failed to fetch trusted domains', { cause: error });
     }
