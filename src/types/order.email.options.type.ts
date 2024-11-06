@@ -32,7 +32,7 @@ export type OrderEmailOptions = {
   sender?: string;
 
   /**
-   * Email subject.
+   * Message subject.
    *
    * @example
    * subject: 'Welcome to Our Service'
