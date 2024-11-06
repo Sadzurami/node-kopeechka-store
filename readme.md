@@ -116,13 +116,13 @@ You can set the `option.full` to `true` to always get the full message instead.
 - `email` (string): The email address to get the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
 
-#### `.waitMessage(email: string, options?: GetMessageOptions, timeout?: number): Promise<string>`
+#### `.waitMessage(email: string, options?: WaitMessageOptions): Promise<string>`
 
 Like `.getMessage()` but waits for the message and throws if it's not found.
 
 - `email` (string): The email address to wait for the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
-- `timeout` (number, optional): Timeout in milliseconds to wait for the message.
+- `options.timeout` (number, optional): Timeout in milliseconds to wait for the message.
 
 ### errors
 
