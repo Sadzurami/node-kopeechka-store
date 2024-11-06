@@ -78,6 +78,7 @@ export class Kopeechka {
             mail_type: domains || undefined,
             soft: this.clientPartnerId,
           },
+          retry: 0,
         })
         .json<{ status: StatusCode; value?: ErrorCode; id?: string; mail?: string; password?: string }>();
 
