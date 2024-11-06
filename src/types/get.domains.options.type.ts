@@ -1,10 +1,8 @@
-/**
- * Options to get a domains list.
- */
 export type GetDomainsOptions = {
   /**
    * Switch to get Kopeechka domains.
    * Like `*.site`, `*.blog`, etc.
+   *
    * @default true
    */
   kopeechka?: boolean;
@@ -12,6 +10,7 @@ export type GetDomainsOptions = {
   /**
    * Switch to get trusted domains.
    * Like `gmail.com`, `yahoo.com`, etc.
+   *
    * @default true
    */
   trusted?: boolean;

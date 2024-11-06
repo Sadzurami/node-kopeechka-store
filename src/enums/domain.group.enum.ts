@@ -1,53 +1,46 @@
-/**
- * Enum for domain groups.
- */
 export enum DomainGroup {
   /**
-   * Any domain owned by `Kopeechka`.
-   *
-   * Like `*.site`, `*.blog`, `*.pro` etc.
+   * Any domain owned by `Kopeechka` (e.g., `*.site`, `*.blog`, `*.pro`).
    */
   Kopeechka = 'ALL',
 
   /**
-   * Any trusted email domain.
-   *
-   * Like `gmail.com`, `yahoo.com` etc.
+   * Any trusted email domain (e.g., `gmail.com`, `yahoo.com`).
    */
   Trusted = 'REAL',
 
   /**
-   * Any private domain owned by client.
+   * Any private domain owned by the client.
    */
   Private = 'mine',
 
   /**
-   * Any domain from `gmx` group.
+   * Any domain from the `gmx` group.
    */
   Gmx = 'GMX',
 
   /**
-   * Any domain from `yandex` group.
+   * Any domain from the `yandex` group.
    */
   Yandex = 'YANDEX',
 
   /**
-   * Any domain from `mail.ru` group.
+   * Any domain from the `mail.ru` group.
    */
   Mailru = 'MAILRU',
 
   /**
-   * Any domain from `outlook` & `hotmail` group.
+   * Any domain from the `outlook` & `hotmail` group.
    */
   Outlook = 'OUTLOOK',
 
   /**
-   * Any domain from `mail.com` group.
+   * Any domain from the `mail.com` group.
    */
   Mailcom = 'MAILCOM',
 
   /**
-   * Any domain from `rambler` group.
+   * Any domain from the `rambler` group.
    */
   Rambler = 'RAMBLER',
 }

@@ -1,6 +1,3 @@
-/**
- * Enum for error messages.
- */
 export enum ErrorMessage {
   BAD_SITE = 'Website not found',
   BAD_EMAIL = 'Email not found',

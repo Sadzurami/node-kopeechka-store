@@ -1,9 +1,6 @@
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 
-/**
- * Kopeechka class constructor options.
- */
 export type ConstructorOptions = {
   /**
    * Api access key.
@@ -16,26 +13,30 @@ export type ConstructorOptions = {
   partner?: string | number;
 
   /**
-   * Currency to use for balance and prices.
+   * Currency for balance and prices.
+   *
    * @default 'USD'
    */
   currency?: 'USD' | 'RUB';
 
   /**
-   * Base url for the api requests.
+   * Base url for api requests.
+   *
    * @default 'https://api.kopeechka.store'
    */
   baseUrl?: string;
 
   /**
    * Api requests timeout in milliseconds.
+   *
    * @default 50000
    */
   timeout?: number;
 
   /**
-   * `https.Agent` or `http.Agent` instance to use for requests.
-   *  @default https.Agent
+   * `https.Agent` or `http.Agent` instance for requests.
+   *
+   * @default https.Agent
    */
   httpAgent?: HttpsAgent | HttpAgent;
 };

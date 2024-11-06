@@ -1,15 +1,12 @@
 import { DomainGroup } from '../enums/domain.group.enum';
 
-/**
- * Options for ordering an email address.
- */
 export type OrderEmailOptions = {
   /**
-   * Email domain(s) you want to get.
+   * Email domain(s) to get.
    *
-   * If omitted, the server will return any domain owned by `Kopeechka`.
+   * If omitted, the server returns any domain owned by `Kopeechka`.
    *
-   * If an array or group of domains is provided, the server will return one of them randomly.
+   * If an array or group of domains is provided, the server returns one randomly.
    *
    * @example
    * domains: 'gmail.com'
@@ -22,13 +19,12 @@ export type OrderEmailOptions = {
   /**
    * Regular expression for extracting values from the message.
    *
-   * **Note:**
-   * This regex is sent as a regex query parameter to the server, not used locally.
+   * **Note:** This regex is sent as a query parameter to the server, not used locally.
    */
   regexp?: string;
 
   /**
-   * Email address of the sender.
+   * Sender's email address.
    *
    * @example
    * sender: 'noreply@example.com'
@@ -36,7 +32,7 @@ export type OrderEmailOptions = {
   sender?: string;
 
   /**
-   * Subject of the email.
+   * Email subject.
    *
    * @example
    * subject: 'Welcome to Our Service'
@@ -44,8 +40,9 @@ export type OrderEmailOptions = {
   subject?: string;
 
   /**
-   * Switch to get the password of the email address.
-   * This password allows to use [web access](https://webmail.kopeechka.store/).
+   * Switch to get the email password.
+   *
+   * This password allows using [web access](https://webmail.kopeechka.store/).
    */
   password?: boolean;
 

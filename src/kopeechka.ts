@@ -18,7 +18,7 @@ import { WaitMessageOptions } from './types/wait.message.options.type';
 const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
 
 /**
- * Wrapper around [Kopeechka.Store](https://kopeechka.store/) api.
+ * Wrapper around [Kopeechka.Store](https://kopeechka.store/) api
  */
 export class Kopeechka {
   private readonly apiBaseUrl: string = 'https://api.kopeechka.store';
@@ -44,13 +44,13 @@ export class Kopeechka {
   }
 
   /**
-   * Orders an email address for the specified website.
+   * Orders an email for the specified website.
    *
-   * @param website - The website to order the email address for.
-   * @param options - Additional options for ordering the email address.
-   * @returns The ordered email address.
+   * @param website - Website to order the email for.
+   * @param options - Additional options.
+   * @returns A promise that resolves with the ordered email.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -88,20 +88,20 @@ export class Kopeechka {
 
       return mail;
     } catch (error) {
-      throw new Error('Failed to order email address', { cause: error });
+      throw new Error('Failed to order email', { cause: error });
     }
   }
 
   /**
-   * Reorders an email address for the specified website.
+   * Reorders an email for the specified website.
    *
-   * Use this method to retrieve new messages for the requested email address.
+   * Use to retrieve additional messages for the requested email.
    *
-   * @param website - The website to order the email address for.
-   * @param email - The email address to reorder.
-   * @param options - Additional options for reordering the email address.
+   * @param website - Website to reorder the email for.
+   * @param email - Email to reorder.
+   * @param options - Additional options.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -132,16 +132,16 @@ export class Kopeechka {
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
     } catch (error) {
-      throw new Error('Failed to reorder email address', { cause: error });
+      throw new Error('Failed to reorder email', { cause: error });
     }
   }
 
   /**
-   * Cancels or releases the specified email address.
+   * Cancels or releases the specified email.
    *
-   * @param email - The email address to cancel.
-   * 
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @param email - Email to cancel.
+   *
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -155,7 +155,7 @@ export class Kopeechka {
    * try {
    *   // do something with the email
    * } finally {
-       await kopeechka.cancelEmail(email);
+   *   await kopeechka.cancelEmail(email);
    * }
    */
   public async cancelEmail(email: string) {
@@ -171,15 +171,15 @@ export class Kopeechka {
       this.cache.delete(`email:id:${email}`);
       this.cache.delete(`email:password:${email}`);
     } catch (error) {
-      throw new Error('Failed to cancel email address', { cause: error });
+      throw new Error('Failed to cancel email', { cause: error });
     }
   }
 
   /**
-   * Retrieves the id associated with the email address.
+   * Retrieves the id associated with the email.
    *
-   * @param email - The email address to retrieve the id for.
-   * @returns The id of the specified email address.
+   * @param email - The email to retrieve the id for.
+   * @returns The id of the specified email.
    *
    * @throws Will throw an error if the email id is not found.
    *
@@ -201,12 +201,12 @@ export class Kopeechka {
   }
 
   /**
-   * Refreshes the id associated with the specified email address.
+   * Refreshes the id associated with the specified email.
    *
    * @param website - The website to refresh the email id for.
-   * @param email - The email address to refresh the id for.
+   * @param email - The email to refresh the id for.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -234,14 +234,14 @@ export class Kopeechka {
   }
 
   /**
-   * Retrieves the password associated with the specified email address.
+   * Retrieves the password associated with the specified email.
    *
-   * This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email address.
+   * This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email.
    *
-   * **NOTE:** You must include the `password` option when ordering the email address.
+   * **NOTE:** You must include the `password` option when ordering the email.
    *
-   * @param email - The email address to retrieve the password for.
-   * @returns The password of the specified email address.
+   * @param email - The email to retrieve the password for.
+   * @returns The password of the specified email.
    *
    * @throws Will throw an error if the email password is not found.
    *
@@ -263,11 +263,11 @@ export class Kopeechka {
   }
 
   /**
-   * Retrieves the balance of the account.
+   * Retrieves the account balance.
    *
-   * @returns The balance of the account.
+   * @returns A promise that resolves with the account balance.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -294,17 +294,17 @@ export class Kopeechka {
   }
 
   /**
-   * Retrieves the message of the specified email address.
+   * Retrieves the message of the specified email.
    *
-   * By default, this method returns only a short value of the message if possible.
+   * By default, returns a short value of the message if possible.
    *
-   * You can set the `option.full` to `true` to always get the full message instead.
+   * Set `option.full` to `true` to always get the full message.
    *
-   * @param email - The email address to get the message for.
-   * @param options - Additional options for getting the message.
-   * @returns Parsed value or full message, or `null` if the message is not found.
+   * @param email - The email to get the message for.
+   * @param options - Additional options.
+   * @returns A promise that resolves with the parsed value or full message, or `null` if the message is not found.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```
@@ -339,14 +339,14 @@ export class Kopeechka {
   }
 
   /**
-   * Like `.getMessage()` but waits for the message and throws if it's not found.
+   * Like `.getMessage()` but waits for the message and throws if not found.
    *
-   * @param email - The email address to get the message for.
-   * @param options - Additional options for waiting for the message.
-   * @returns Parsed value or full message.
+   * @param email - The email to get the message for.
+   * @param options - Additional options.
+   * @returns A promise that resolves with the parsed value or full message.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
-   * @throws Will throw an error if the message is not found for given time.
+   * @throws Will throw an error due to network issues, server errors, etc.
+   * @throws Will throw an error if the message is not found within the given time.
    *
    * @example
    * ```
@@ -392,13 +392,13 @@ export class Kopeechka {
   }
 
   /**
-   * Retrieves the domains list for the specified website.
+   * Retrieves the domains list.
    *
    * @param website - The website to get domains for.
-   * @param options - Additional options for getting domains.
-   * @returns The domains of the specified website.
+   * @param options - Additional options.
+   * @returns A promise that resolves with the domains list.
    *
-   * @throws Will throw an error due to network problems, server errors, etc.
+   * @throws Will throw an error due to network issues, server errors, etc.
    *
    * @example
    * ```

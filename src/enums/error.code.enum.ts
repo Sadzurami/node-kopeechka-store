@@ -1,6 +1,3 @@
-/**
- * Enum for error code.
- */
 export enum ErrorCode {
   BadSite = 'BAD_SITE',
   BadToken = 'BAD_TOKEN',
