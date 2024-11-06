@@ -98,6 +98,8 @@ export class Kopeechka {
    *
    * Use to retrieve additional messages for the requested email.
    *
+   * This method can be used even if email was ordered some time ago or from another app.
+   *
    * @param website - Website to reorder the email for.
    * @param email - Email to reorder.
    * @param options - Additional options.

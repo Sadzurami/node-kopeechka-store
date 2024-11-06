@@ -59,6 +59,8 @@ Orders an email for the specified website.
 Reorders an email for the specified website.\
 Use to retrieve additional messages for the requested email.
 
+This method can be used even if email was ordered some time ago or from another app.
+
 - `website` (string): The website to order the email for.
 - `email` (string): The email to reorder.
 - `options.regexp` (string, optional): Regular expression to extract values from the message.
