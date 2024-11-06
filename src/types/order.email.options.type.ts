@@ -40,9 +40,7 @@ export type OrderEmailOptions = {
   subject?: string;
 
   /**
-   * Switch to get the email password.
-   *
-   * This password allows using [web access](https://webmail.kopeechka.store/).
+   * Switch to get the email's password for [web access](https://webmail.kopeechka.store/).
    */
   password?: boolean;
 
