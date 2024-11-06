@@ -61,9 +61,9 @@ Use to retrieve additional messages for the requested email.
 
 - `website` (string): The website to order the email for.
 - `email` (string): The email to reorder.
-- `options.regexp` (string, optional): Switch to get the email's password for [web access](https://webmail.kopeechka.store/).
+- `options.regexp` (string, optional): Regular expression to extract values from the message.
 - `options.subject` (string, optional): Subject of the email.
-- `options.password` (boolean, optional): Switch to get the password of the email address.
+- `options.password` (boolean, optional): Switch to get the email's password for [web access](https://webmail.kopeechka.store/).
 
 #### `.cancelEmail(email: string): Promise<void>`
 
