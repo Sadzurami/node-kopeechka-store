@@ -86,7 +86,7 @@ Refreshes the id associated with the specified email.
 
 #### `.getEmailPassword(email: string): string`
 
-Retrieves the password associated with the specified email.
+Retrieves the password associated with the specified email.\n
 This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email.
 
 - `email` (string): The email to retrieve the password for.
