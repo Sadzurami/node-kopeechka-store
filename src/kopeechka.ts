@@ -297,9 +297,9 @@ export class Kopeechka {
   /**
    * Retrieves the message of the specified email.
    *
-   * By default, returns a short value of the message if possible.
+   * By default, server returns a short value of the message if possible.
    *
-   * Set `option.full` to `true` to always get the full message.
+   * Switch `options.full` to always get the full message.
    *
    * @param email - The email to get the message for.
    * @param options - Additional options.

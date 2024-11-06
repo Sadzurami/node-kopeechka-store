@@ -98,8 +98,9 @@ Retrieves the account balance.
 #### `.getMessage(email: string, options?: GetMessageOptions): Promise<string | null>`
 
 Retrieves the message of the specified email.\
-By default, returns a short value of the message if possible.\
-Set `option.full` to `true` to always get the full message.
+
+By default, server returns a short value of the message if possible.\
+Switch `options.full` to always get the full message.
 
 - `email` (string): The email to get the message for.
 - `options.full` (boolean, optional): Switch to get the full message.
