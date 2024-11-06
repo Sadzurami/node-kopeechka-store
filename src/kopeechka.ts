@@ -13,6 +13,7 @@ import { GetDomainsOptions } from './types/get.domains.options.type';
 import { GetMessageOptions } from './types/get.message.options.type';
 import { OrderEmailOptions } from './types/order.email.options.type';
 import { ReorderEmailOptions } from './types/reorder.email.options.type';
+import { WaitMessageOptions } from './types/wait.message.options.type';
 
 const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
 
@@ -341,8 +342,7 @@ export class Kopeechka {
    * Like `.getMessage()` but waits for the message and throws if it's not found.
    *
    * @param email - The email address to get the message for.
-   * @param options - Additional options for getting the message.
-   * @param timeout - The time to wait for the message in milliseconds. Default: `100` seconds.
+   * @param options - Additional options for waiting for the message.
    * @returns Parsed value or full message.
    *
    * @throws Will throw an error due to network problems, server errors, etc.
@@ -359,7 +359,9 @@ export class Kopeechka {
    * const message = await kopeechka.waitMessage(email);
    * ```
    */
-  public async waitMessage(email: string, options: GetMessageOptions = {}, timeout: number = 100 * 1000) {
+  public async waitMessage(email: string, options: WaitMessageOptions = {}) {
+    options = { timeout: 100000, ...options };
+
     return await new Promise<string>((resolve, reject) => {
       const start: number = Date.now();
       const delay: number = 5000;
@@ -373,7 +375,7 @@ export class Kopeechka {
             return;
           }
 
-          if (Date.now() - start >= timeout) {
+          if (Date.now() - start >= options.timeout) {
             reject(new KopeechkaError(ErrorCode.NoMessage));
             return;
           }
