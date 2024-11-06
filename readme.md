@@ -86,7 +86,7 @@ Refreshes the id associated with the specified email.
 
 #### `.getEmailPassword(email: string): string`
 
-Retrieves the password associated with the specified email.\n
+Retrieves the password associated with the specified email.\
 This password allows access to [web interface](https://webmail.kopeechka.store/) for the specified email.
 
 - `email` (string): The email to retrieve the password for.
@@ -98,7 +98,6 @@ Retrieves the account balance.
 #### `.getMessage(email: string, options?: GetMessageOptions): Promise<string | null>`
 
 Retrieves the message of the specified email.\
-
 By default, server returns a short value of the message if possible.\
 Switch `options.full` to always get the full message.
 
