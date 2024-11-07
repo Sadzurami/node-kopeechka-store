@@ -151,9 +151,12 @@ export class Kopeechka {
    * const kopeechka = new Kopeechka({ key });
    *
    * const email = await kopeechka.orderEmail('example.com');
+   * let message;
    *
    * try {
-   *   // do something with the email
+   *   message = await kopeechka.waitMessage(email);
+   * } catch (error) {
+   *   console.error(error);
    * } finally {
    *   await kopeechka.cancelEmail(email);
    * }
