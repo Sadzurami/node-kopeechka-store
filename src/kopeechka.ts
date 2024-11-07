@@ -415,7 +415,9 @@ export class Kopeechka {
    * const domains = await kopeechka.getDomains('example.com');
    * ```
    */
-  public async getDomains(website?: string, options: GetDomainsOptions = { trusted: true, kopeechka: true }) {
+  public async getDomains(website?: string, options: GetDomainsOptions = {}) {
+    options = { kopeechka: true, trusted: true, ...options };
+
     try {
       const promises: Promise<string[]>[] = [];
 
