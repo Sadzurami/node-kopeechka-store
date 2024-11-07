@@ -1,5 +1,5 @@
-import { Agent as HttpAgent } from 'http';
-import { Agent as HttpsAgent } from 'https';
+import http from 'http';
+import https from 'https';
 
 export type ConstructorOptions = {
   /**
@@ -38,5 +38,5 @@ export type ConstructorOptions = {
    *
    * @default https.Agent
    */
-  httpAgent?: HttpsAgent | HttpAgent;
+  httpAgent?: https.Agent | http.Agent;
 };
