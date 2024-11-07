@@ -133,9 +133,10 @@ Retrieves the domains list.
 
 #### `KopeechkaError`
 
-Error class for errors thrown by the api.
+Error class for errors returned by the server.
 
-- `code` (string): Error code returned by the api.
+- `code` (string): Error code returned by server.
+- `status` (string): Status code returned by server.
 
 ### enums
 
@@ -155,6 +156,60 @@ Mapped messages for error codes.
 
 Status codes returned by the server.
 
+## Advanced example
+
+```js
+import { Kopeechka } from '@sadzurami/kopeechka-store';
+
+const key = 'your-api-key';
+const kopeechka = new Kopeechka({ key, currency: 'USD' });
+
+(async () => {
+  const balance = await kopeechka.getBalance();
+  console.log(`Balance: ${balance}`);
+
+  const domains = await kopeechka.getDomains('example.com', {
+    kopeechka: false,
+    trusted: true,
+    count: { min: 1000 },
+    price: { max: 0.005 },
+  });
+
+  console.log(`Domains: ${domains.join(',')}`);
+
+  const email = await kopeechka.orderEmail('example.com', {
+    domains: domains,
+    sender: 'noreply@example.com',
+    subject: 'Your code',
+    password: true,
+  });
+
+  console.log(`Email: ${email}`);
+  console.log(`Email id: ${kopeechka.getEmailId(email)}`);
+  console.log(`Email password: ${kopeechka.getEmailPassword(email)}`);
+
+  console.log('Waiting for the message...');
+
+  let message = await kopeechka.getMessage(email, { full: true });
+  console.log(message ? `Message: ${message}` : 'Message not found');
+
+  await kopeechka.reorderEmail('example.com', email, {
+    subject: 'Your new code',
+    regexp: 'Your code is: (\\d+)',
+  });
+
+  console.log('Email reordered');
+  console.log('Waiting for the new message...');
+
+  message = await kopeechka.waitMessage(email, { timeout: 100 * 1000 });
+  console.log(`New message: ${message}`);
+
+  await kopeechka.cancelEmail(email);
+  console.log('Email canceled');
+})();
+```
+
 ## Related
 
 - [kopeechka-s](https://github.com/Sadzurami/kopeechka-s) - Browser Automation Studio wrapper around the kopeechka.store api
+- [kopeechka-faq](https://faq.kopeechka.store/) - FAQ about kopeechka.store and api
