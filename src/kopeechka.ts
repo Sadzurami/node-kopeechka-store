@@ -79,7 +79,7 @@ export class Kopeechka {
         })
         .json<{ status: StatusCode; value?: ErrorCode; id?: string; mail?: string; password?: string }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -127,7 +127,7 @@ export class Kopeechka {
         })
         .json<{ status: StatusCode; value?: ErrorCode; id?: string; mail?: string; password?: string }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       this.cache.set(`email:id:${mail}`, id);
       if (password) this.cache.set(`email:password:${mail}`, password);
@@ -169,7 +169,7 @@ export class Kopeechka {
         .get('mailbox-cancel', { searchParams: { id } })
         .json<{ status: StatusCode; value?: ErrorCode }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       this.cache.delete(`email:id:${email}`);
       this.cache.delete(`email:password:${email}`);
@@ -228,7 +228,7 @@ export class Kopeechka {
         .get('mailbox-get-fresh-id', { searchParams: { site: website, email } })
         .json<{ status: StatusCode; value?: ErrorCode; id?: string }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       this.cache.set(`email:id:${email}`, id);
     } catch (error) {
@@ -288,7 +288,7 @@ export class Kopeechka {
         .get('user-balance', { searchParams: { cost: this.clientCurrency } })
         .json<{ status: StatusCode; value?: ErrorCode; balance?: number }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       return balance;
     } catch (error) {
@@ -332,7 +332,7 @@ export class Kopeechka {
 
       if (status !== StatusCode.Success) {
         if (value === ErrorCode.NoMessage) return null;
-        else throw new KopeechkaError(value);
+        else throw new KopeechkaError(value, status);
       }
 
       const message = options.full || !value ? fullmessage : value;
@@ -440,7 +440,7 @@ export class Kopeechka {
           popular?: { name: string; cost: string | number; count: number }[];
         }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       let entries = popular;
 
@@ -473,7 +473,7 @@ export class Kopeechka {
         .get('mailbox-get-domains', { searchParams: { site: website || undefined } })
         .json<{ status: StatusCode; value?: ErrorCode; count?: number; domains?: string[] }>();
 
-      if (status !== StatusCode.Success) throw new KopeechkaError(value);
+      if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
       return domains;
     } catch (error) {
