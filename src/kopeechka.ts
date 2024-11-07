@@ -1,7 +1,6 @@
 import got, { Got } from 'got';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-import PQueue from 'p-queue';
 
 import TTLCache from '@isaacs/ttlcache';
 
@@ -14,8 +13,6 @@ import { GetMessageOptions } from './types/get.message.options.type';
 import { OrderEmailOptions } from './types/order.email.options.type';
 import { ReorderEmailOptions } from './types/reorder.email.options.type';
 import { WaitMessageOptions } from './types/wait.message.options.type';
-
-const requestsQueue = new PQueue({ interval: 100, intervalCap: 1 });
 
 /**
  * Wrapper around [Kopeechka.Store](https://kopeechka.store/) api
@@ -502,7 +499,6 @@ export class Kopeechka {
       },
       searchParams: { token: this.clientToken, type: 'JSON', api: '2.0' },
       agent: useSSL ? { https: this.httpAgent as any } : { http: this.httpAgent },
-      hooks: { beforeRequest: [() => requestsQueue.add(() => {})] },
       timeout: options.timeout || 50000,
       responseType: 'json',
       throwHttpErrors: true,
