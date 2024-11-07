@@ -24,8 +24,7 @@
   },
   "dependencies": {
     "@isaacs/ttlcache": "^1.4.1",
-    "got": "^11.8.6",
-    "p-queue": "^6"
+    "got": "^11.8.6"
   },
   "devDependencies": {
     "@sadzurami/eslint-config": "^1.0.1",
