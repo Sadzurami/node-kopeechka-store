@@ -145,15 +145,15 @@ Shortcuts for domain groups.
 
 #### `ErrorCode`
 
-Error codes returned by the api.
+Error codes returned by the server.
 
 #### `ErrorMessage`
 
-Mapped error messages for the error codes.
+Mapped messages for error codes.
 
 #### `StatusCode`
 
-Status codes returned by the api.
+Status codes returned by the server.
 
 ## Related
 
