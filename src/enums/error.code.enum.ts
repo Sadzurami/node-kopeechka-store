@@ -9,6 +9,10 @@ export enum ErrorCode {
   SystemError = 'SYSTEM_ERROR',
   NoActivation = 'NO_ACTIVATION',
   TimeLimitExceed = 'TIME_LIMIT_EXCEED',
-  BadServerResponse = 'BAD_SERVER_RESPONSE',
   ActivationCanceled = 'ACTIVATION_CANCELED',
+
+  /**
+   * Fallback value for unknown error codes.
+   */
+  BadServerResponse = 'BAD_SERVER_RESPONSE',
 }
