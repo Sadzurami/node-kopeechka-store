@@ -1,3 +1,6 @@
 {
-  "extends": "@sadzurami/ts-config"
+  "extends": "@sadzurami/ts-config",
+  "compilerOptions": {
+    "removeComments": false
+  }
 }
