@@ -122,8 +122,8 @@ Like `.getMessage()` but waits for the message and throws if not found.
 Retrieves the domains list.
 
 - `website` (string, optional): The website to get domains for.
-- `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains.
 - `options.trusted` (boolean, optional): Switch to get trusted domains.
+- `options.kopeechka` (boolean, optional): Switch to get Kopeechka domains.
 - `options.count.min` (number, optional): Minimum count of the domain.
 - `options.count.max` (number, optional): Maximum count of the domain.
 - `options.price.min` (number, optional): Minimum price of the domain.
