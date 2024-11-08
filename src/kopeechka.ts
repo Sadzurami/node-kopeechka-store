@@ -419,18 +419,38 @@ export class Kopeechka {
     options = { kopeechka: true, trusted: true, ...options };
 
     try {
-      const promises: Promise<string[]>[] = [];
+      const promises: Promise<{ name: string; cost?: number; count?: number }[]>[] = [] as any;
 
-      if (options.trusted) promises.push(this.fetchTrustedDomains(website, options));
+      if (options.trusted) promises.push(this.fetchTrustedDomains(website));
       if (options.kopeechka) promises.push(this.fetchKopeechkaDomains(website));
 
-      return (await Promise.all(promises)).flat();
+      let entries = (await Promise.all(promises)).flat();
+
+      if (options.count) {
+        entries = entries.filter((entry) => {
+          if (typeof entry.count === 'undefined') return true;
+          if (options.count.min && entry.count < options.count.min) return false;
+          if (options.count.max && entry.count > options.count.max) return false;
+          return true;
+        });
+      }
+
+      if (options.price) {
+        entries = entries.filter((entry) => {
+          if (typeof entry.cost === 'undefined') return true;
+          if (options.price.min && entry.cost < options.price.min) return false;
+          if (options.price.max && entry.cost > options.price.max) return false;
+          return true;
+        });
+      }
+
+      return entries.map((entry) => entry.name);
     } catch (error) {
       throw new Error('Failed to get domains', { cause: error });
     }
   }
 
-  private async fetchTrustedDomains(website?: string, options: Pick<GetDomainsOptions, 'count' | 'price'> = {}) {
+  private async fetchTrustedDomains(website?: string) {
     try {
       const { status, value, popular } = await this.httpClient
         .get('mailbox-zones', { searchParams: { site: website || undefined, popular: 1, cost: this.clientCurrency } })
@@ -442,26 +462,7 @@ export class Kopeechka {
 
       if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
-      let entries = popular;
-
-      if (options.count) {
-        entries = entries.filter((entry) => {
-          if (options.count.min && entry.count < options.count.min) return false;
-          if (options.count.max && entry.count > options.count.max) return false;
-          return true;
-        });
-      }
-
-      if (options.price) {
-        entries = entries.filter((entry) => {
-          const cost = Number(entry.cost.toString());
-          if (options.price.min && cost < options.price.min) return false;
-          if (options.price.max && cost > options.price.max) return false;
-          return true;
-        });
-      }
-
-      return entries.map((entry) => entry.name);
+      return popular.map((entry) => ({ ...entry, cost: Number(entry.cost) }));
     } catch (error) {
       throw new Error('Failed to fetch trusted domains', { cause: error });
     }
@@ -475,7 +476,7 @@ export class Kopeechka {
 
       if (status !== StatusCode.Success) throw new KopeechkaError(value, status);
 
-      return domains;
+      return domains.map((domain) => ({ name: domain }));
     } catch (error) {
       throw new Error('Failed to fetch kopeechka domains', { cause: error });
     }
