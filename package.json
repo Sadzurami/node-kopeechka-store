@@ -1,6 +1,6 @@
 {
   "name": "@sadzurami/kopeechka-store",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Simple wrapper around kopeechka.store api",
   "author": "Sadzurami (https://github.com/Sadzurami)",
   "license": "MIT",
