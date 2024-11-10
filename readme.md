@@ -51,7 +51,7 @@ Orders an email for the specified website.
 - `options.regexp` (string, optional): Regular expression to extract values from the message.
 - `options.sender` (string, optional): Email of the sender.
 - `options.subject` (string, optional): Subject of the message.
-- `options.password` (boolean, optional): Switch to get the email's password for [web access](https://webmail.kopeechka.store/).
+- `options.password` (boolean, optional): Switch to get the email's password for [web interface](https://webmail.kopeechka.store/).
 - `options.invenstor` (boolean, optional): Switch to use an email from your pool.
 
 #### `.reorderEmail(website: string, email: string, options?: ReorderEmailOptions): Promise<void>`
@@ -65,7 +65,7 @@ This method can be used even if email was ordered some time ago or from another 
 - `email` (string): The email to reorder.
 - `options.regexp` (string, optional): Regular expression to extract values from the message.
 - `options.subject` (string, optional): Subject of the message.
-- `options.password` (boolean, optional): Switch to get the email's password for [web access](https://webmail.kopeechka.store/).
+- `options.password` (boolean, optional): Switch to get the email's password for [web interface](https://webmail.kopeechka.store/).
 
 #### `.cancelEmail(email: string): Promise<void>`
 
