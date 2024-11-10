@@ -381,7 +381,7 @@ export class Kopeechka {
           }
 
           if (Date.now() - start >= options.timeout) {
-            reject(new KopeechkaError(ErrorCode.NoMessage));
+            reject(new Error('Failed to get message', { cause: new KopeechkaError(ErrorCode.NoMessage) }));
             return;
           }
 
