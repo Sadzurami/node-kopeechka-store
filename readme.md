@@ -1,5 +1,7 @@
 # kopeechka-store
 
+**Archived: Kopeechka.store is shut down.**
+
 > Simple wrapper around [kopeechka.store](https://kopeechka.store/) api
 
 ## Install
